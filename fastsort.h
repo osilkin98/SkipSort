@@ -61,5 +61,12 @@ void sortData(int* data, int N);
  */
 int skipSortOptimized(int* data, int N);
 
+/** Bubble-sort algorithm for comparing it to the skip-sort algorithm
+ *
+ * @param [in,out] data C Pointer to array of integers
+ * @param [in] N
+ */
+void bubbleSort(int *data, int N);
+
 
 #endif //CFASTSORT_FASTSORT_H
