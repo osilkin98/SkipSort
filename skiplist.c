@@ -17,7 +17,7 @@
 
 
 struct skiplist {
-    int key;
+    int key, count;
     int height;                /* number of next pointers */
     struct skiplist *next[1];  /* first of many */
 };
@@ -54,6 +54,7 @@ skiplistCreateNode(int key, int height)
     printf("Initialized a new skiplist node at %p\n\n", s);
 
     s->key = key;
+    s->count = 1;
     s->height = height;
 
     return s;
@@ -95,7 +96,7 @@ skiplistDestroy(Skiplist s)
 /* return maximum key less than or equal to key */
 /* or INT_MIN if there is none */
 int
-skiplistSearch(Skiplist s, int key)
+skiplistSearch(Skiplist s, int key, bool increment)
 {
     register int level;
 
@@ -106,6 +107,10 @@ skiplistSearch(Skiplist s, int key)
         while(s->next[level] && s->next[level]->key <= key) {
             s = s->next[level];
         }
+    }
+
+    if(key == s->key && increment) {
+        s->count++;
     }
 
     return s->key;

@@ -10,7 +10,7 @@ void skiplistDestroy(Skiplist s);
 
 /* return maximum key less than or equal to key */
 /* or INT_MIN if there is none */
-int skiplistSearch(Skiplist s, int key);
+int skiplistSearch(Skiplist s, int key, bool increment);
 
 /* insert a new key into s */
 void skiplistInsert(Skiplist s, int key);
