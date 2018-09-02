@@ -1,5 +1,6 @@
 typedef struct skiplist * Skiplist;
 
+typedef char bool;
 
 /* create an empty skiplist */
 Skiplist skiplistCreate(void);
