@@ -216,3 +216,11 @@ skiplistDelete(Skiplist s, int key)
 
     free(target);
 }
+
+int skiplistSafeInsert(Skiplist s, int key) {
+
+    /* Check to see if the fist value is null */
+    if(!s->next[BASE_LEVEL]) {
+
+    }
+}
