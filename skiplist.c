@@ -84,11 +84,10 @@ skiplistCreate(void)
      * maximum current tower height, not the capacity. */
     s->height = 1;
 
-    /* zero out all the accessible data allocated in the 32 Skiplist node pointers */
+    /* NULL out all the pointers that were allocated with malloc*/
     for(i = 0; i < MAX_HEIGHT; i++) {
-        s->next[i] = 0;
+        s->next[i] = NULL;
     }
-
     return s;
 }
 
