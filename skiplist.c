@@ -46,6 +46,10 @@ skiplistCreateNode(int key, int height)
     assert(height > 0);
     assert(height <= MAX_HEIGHT);
 
+    /* we allocate space for the amount of space needed for one skiplist node object,
+     * that being the key, height and count integers 3*(4Bytes), plus the array of struct skiplist pointers,
+     * with one already insantiated. We also allocate space for the remaining uninstantiated pointers,
+     * represented as (height - 1) skiplist pointers. */
     size_t memory_usage = sizeof(struct skiplist) + sizeof(struct skiplist *) * (height - 1);
 
     printf("Using %lu bits of memory to create a new skiplist node\n", memory_usage);
@@ -73,9 +77,14 @@ skiplistCreate(void)
     /* s is a dummy head element */
     s = skiplistCreateNode(INT_MIN, MAX_HEIGHT);
 
-    /* this tracks the maximum height of any node */
+    /* this tracks the maximum height of any node.
+     *
+     * Although we allocated enough space for 32 pointers,
+     * we set the height to 1 because we want to keep track of the
+     * maximum current tower height, not the capacity. */
     s->height = 1;
 
+    /* zero out all the accessible data allocated in the 32 Skiplist node pointers */
     for(i = 0; i < MAX_HEIGHT; i++) {
         s->next[i] = 0;
     }
