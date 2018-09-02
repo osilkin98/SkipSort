@@ -50,3 +50,4 @@ void sortData(int *data, int N) {
     /* destroy the skiplist */
     skiplistDestroy(slist);
 }
+
