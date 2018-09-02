@@ -143,11 +143,17 @@ set of every `byte` value.
 To put matters into perspective, if you were to try and sort all `4294967296` possible integer values,
 you would **AT MOST** require `32` steps for each value, which isn't bad at all. 
 
-#### Where do we go From Here?
+## Where do we go From Here?
 There is still room for further optimization and fine-tuning to this algorithm, namely in the 
 searching and inserting space. I've considered using a trie data-structure to reduce it down to 
 `O(log log n)` lookup, allowing it to become `O(n)` far quicker, however there is no defined order
 to a trie, which makes the process of actually retrieving the data in an ordered and linear fashion, 
 rather difficult. 
 
-It's po
+It's possible to use a hash-table to pre-check whether or not numbers are within the actual skip
+list before looking them. This however might be a problem, as the performance of this decreases
+very quickly with more and more values, so I can't see it being useful considering it would only
+be desirable when we're performing `32` steps just to check whether or not an item is within the skiplist.
+
+It is possible to combine other data structures with the skip list to reduce access times, and so I will
+look into that as well. 
