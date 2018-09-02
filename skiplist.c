@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <limits.h>
 #include <stdio.h>
+#include <time.h>
 
 #include "skiplist.h"
 
@@ -41,6 +42,7 @@ struct skiplist {
 static Skiplist
 skiplistCreateNode(int key, int height)
 {
+
     Skiplist s;
 
     assert(height > 0);
@@ -71,6 +73,8 @@ skiplistCreateNode(int key, int height)
 Skiplist
 skiplistCreate(void)
 {
+    srand((unsigned)time(0));
+
     Skiplist s;
     int i;
 
