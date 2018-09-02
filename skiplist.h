@@ -1,3 +1,10 @@
+struct skiplist {
+    int key;
+    int count;
+    int height;                /* number of next pointers */
+    struct skiplist *next[1];  /* first of many */
+};
+
 typedef struct skiplist * Skiplist;
 
 typedef char bool;

@@ -15,13 +15,6 @@
  * Both of these files lack in terms of documentation, so I've set out to fix that where needed
  * */
 
-
-struct skiplist {
-    int key, count;
-    int height;                /* number of next pointers */
-    struct skiplist *next[1];  /* first of many */
-};
-
 /* choose a height according to a geometric distribution */
 static int
 chooseHeight(void)
