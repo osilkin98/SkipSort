@@ -228,8 +228,22 @@ skiplistDelete(Skiplist s, int key)
 
 int skiplistSafeInsert(Skiplist s, int key) {
 
-    /* Check to see if the fist value is null */
-    if(!s->next[BASE_LEVEL]) {
+    Skiplist toInsert;
+    int insertionHeight = chooseHeight(), steps = 0;
 
+    /* Check to see if the fist value is null, IE empty list */
+    if(!s->next[BASE_LEVEL]) {
+        /* create the node which we will insert */
+        toInsert = skiplistCreateNode(key, insertionHeight);
+        s->height=insertionHeight;
+
+        steps += 1;
+
+        for(; insertionHeight >= 0; --insertionHeight) {
+            toInsert->next[insertionHeight] = s->next[insertionHeight];
+            s->next[insertionHeight] = toInsert;
+            steps += 1;
+        }
+        return steps;
     }
 }
