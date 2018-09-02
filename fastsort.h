@@ -56,8 +56,10 @@ void sortData(int* data, int N);
  *
  * @param [in,out] data C Pointer to array of integers
  * @param [in] N Number of data members within the data array
+ *
+ * @return Number of steps performed by the algorithm
  */
-void skipSortOptimized(int* data, int N);
+int skipSortOptimized(int* data, int N);
 
 
 #endif //CFASTSORT_FASTSORT_H
