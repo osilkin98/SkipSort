@@ -5,6 +5,6 @@
 #ifndef CFASTSORT_FASTSORT_H
 #define CFASTSORT_FASTSORT_H
 
-int* sortData(int* data);
+void sortData(int* data, int N);
 
 #endif //CFASTSORT_FASTSORT_H

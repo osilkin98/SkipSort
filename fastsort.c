@@ -11,21 +11,20 @@
 int* sortData(int *data) {
     Skiplist slist = skiplistCreate();
 
-    register int i, *iterdata = data;
-    /* iterate through the data once and put the # of occurrences
-     * for each number within the dataset into the skip list*/
-    while((i = *iterdata++) != 0) {
-        /* if the value returned is not the key, then it'll be inserted
-         * if it is the key then the number has already been incremented*/
-        if(skiplistSearch(slist, i, 1) != i) {
-            skiplistInsert(slist, i);
+    for(register int i = 0; i < N; ++i) {
+        if(skiplistSearch(slist, data[i], 1) != data[i]) {
+            skiplistInsert(slist, data[i]);
         }
     }
 
+    int k = 0, i = 0;
     while((slist = slist->next[0]) != NULL) {
-        for(i = 0; i < slist -> count; ++i) {
-            *data++ = slist -> key;
+
+        for(i = k; i < k+slist -> count; ++i) {
+            data[i] = slist->key;
         }
+
+        k=i;
     }
 
     skiplistDestroy(slist);
