@@ -231,13 +231,13 @@ skiplistDelete(Skiplist s, int key)
 
 int skiplistSafeInsert(Skiplist s, int key) {
 
-    Skiplist toInsert;
+
     int steps = 0, insertionHeight = chooseHeight(), level;
 
     /* Check to see if the fist value is null, IE empty list */
     if(!s->next[BASE_LEVEL]) {
         /* create the node which we will insert */
-        toInsert = skiplistCreateNode(key, insertionHeight);
+        Skiplist toInsert = skiplistCreateNode(key, insertionHeight);
         s->height=insertionHeight;
 
         steps += 1;
@@ -263,8 +263,72 @@ int skiplistSafeInsert(Skiplist s, int key) {
         while(s->next[level] && /* the next element is non-NULL*/
               s->next[level]->key <= key) /* and its key is less than OR EQUAL to ours*/
         {
+            /* assigning the pointer here will decrease access time on average
+             * and slightly reduce the amount of assembly code created */
+            s = s->next[level];
+            ++steps;
+
+            /* we've found the key we're looking for */
+            if(s->next[level]->key == key) {
+                ++s->next[level]->count; /* increment & return */
+                return steps;
+            }
+
 
         }
     }
 
+    /* now that the level select is the same as the height from which we'd
+     * theoretically insert to, we need to save this position and search
+     * below our position, and if we find it we increment and return,
+     * and if not we'll just start inserting from here */
+
+    /* current level at this point is insertionHeight - 1 */
+
+    Skiplist lowerSearch = s;
+
+    for(; level >= 0; --level) {
+        while(lowerSearch -> next[level] && lowerSearch->next[level]-> key <= key) {
+            /* assigning the pointer here will decrease access time on average
+             * and slightly reduce the amount of assembly code created */
+            lowerSearch = lowerSearch->next[level];
+            ++steps;
+
+            if(lowerSearch->key == key) {
+                ++lowerSearch->count;
+                return steps;
+            }
+        }
+    }
+
+    /* At this point we've exhausted our search and can conclude that the
+     * number we're looking for doesn't exist within the skiplist, and can
+     * instead concentrate on trying to insert the new node.
+     * */
+    Skiplist toInsert = skiplistCreateNode(key, insertionHeight);
+
+    assert(toInsert); /* Check for whether or not the allocation succeeded */
+
+    /* Since we KNOW we're inserting, we can set the height if it's the highest */
+    s->height = insertionHeight > s->height ? insertionHeight : s->height;
+
+    steps += 3;
+
+    for(level = insertionHeight - 1; level >= 0; --level) {
+        /* we have to traverse to the node with the value immediately
+         * less than that of our own */
+        while(s->next[level] && s->next[level]->key < key) {
+            s = s->next[level];
+            ++steps;
+        }
+
+        /* here we actually perform a linked list insertion at the current level*/
+        toInsert->next[level] = s->next[level];
+        s->next[level] = toInsert;
+
+        /* consider the insertion to take 2 steps */
+        steps += 2;
+    }
+
+    return steps;
 }
