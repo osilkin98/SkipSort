@@ -25,4 +25,8 @@ void skiplistInsert(Skiplist s, int key);
 /* delete a key from s */
 void skiplistDelete(Skiplist s, int key);
 
+/* print out the contents of s in a tower-like form */
 void skiplistPrint(Skiplist s);
+
+/* increment if found, otherwise insert if not found*/
+int skiplistSafeInsert(Skiplist s, int key);

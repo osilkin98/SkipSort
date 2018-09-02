@@ -8,10 +8,6 @@
 #include "skiplist.h"
 
 
-void printData(int *data) {
-
-}
-
 
 /**
  *
