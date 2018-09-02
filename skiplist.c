@@ -90,10 +90,12 @@ skiplistDestroy(Skiplist s)
 int
 skiplistSearch(Skiplist s, int key)
 {
-    int level;
+    register int level;
 
+    /* start at the top level */
     for(level = s->height - 1; level >= 0; level--) {
-        /* while */
+        /* while the next node is non-null, and the node's key
+         * is less than the key we're searching for */
         while(s->next[level] && s->next[level]->key <= key) {
             s = s->next[level];
         }
