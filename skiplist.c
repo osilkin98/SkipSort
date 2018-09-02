@@ -43,9 +43,15 @@ skiplistCreateNode(int key, int height)
     assert(height > 0);
     assert(height <= MAX_HEIGHT);
 
-    s = malloc(sizeof(struct skiplist) + sizeof(struct skiplist *) * (height - 1));
+    size_t memory_usage = sizeof(struct skiplist) + sizeof(struct skiplist *) * (height - 1);
+
+    printf("Using %lu bits of memory to create a new skiplist node\n", memory_usage);
+
+    s = malloc(memory_usage);
 
     assert(s);
+
+    printf("Initialized a new skiplist node at %p\n\n", s);
 
     s->key = key;
     s->height = height;
@@ -130,11 +136,14 @@ void skiplistPrint(Skiplist s) {
 void
 skiplistInsert(Skiplist s, int key)
 {
-    int level;
+    register int level;
     Skiplist elt;
 
+    /* creates a new skiplist struct object with a randomized height
+     * determined by the function chooseHeight() at function call */
     elt = skiplistCreateNode(key, chooseHeight());
 
+    /* ensure that the node was created successfully */
     assert(elt);
 
     if(elt->height > s->height) {
@@ -150,6 +159,7 @@ skiplistInsert(Skiplist s, int key)
 
     /* now level is elt->height - 1, we can start inserting */
     for(; level >= 0; level--) {
+        /* finds the node with a value immediately less than that of the key we're entering */
         while(s->next[level] && s->next[level]->key < key) {
             s = s->next[level];
         }
