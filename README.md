@@ -2,7 +2,7 @@
 
 ### What is this?
 
-This is an implementation of a near `O(n)` non-comparison based sorting algorithm for large-ish datasets that
+This is an implementation of an `O(n)` non-comparison based sorting algorithm for large-ish datasets that
 I came up with. 
 
 ### How Does it Work?
@@ -35,7 +35,7 @@ While this looks great in theory, in practice it requires far more resources tha
 The time it takes to hash the values may be `O(1)`, but to be able to hash all possible values of integers
 into the same datastructure, using `D` bits to take into a account for duplicates, would require 
 `O(D^(2^(bits)))` of space complexity. For example, to use a hash table for sorting `32-bit` integers 
-and using `8-bit` values to count duplicates, you would need `O(8^(2^32)) = O(8^4294967296)` which 
+and using `8-bit` values to count duplicates, you would need `8^(2^32) = 8^4294967296` which 
 is an ***ASTRONOMICAL*** amount of space that we can't even begin to comprehend; just for sorting integers.
 
 Even if we *were* somehow able to store that much memory, even in disk memory, the amount of time that would
@@ -122,13 +122,13 @@ list<int> SkipSort(list<int> unsorted) {
 
 | Best | Average | Worst |
 |:----:|:-------:|:-----:|
-|`Ө(n)`|`Ө(n)`| `Ө(n log n)`|
+|`O(n)`|`O(n)`| `O(n log n)`|
 
 ##### Space Complexity
 
-`Ө(n log n)`
+`O(n log n)`
 
-#### Ө(n) Runtime? What's the catch?
+#### O(n) Runtime? What's the catch?
 This answer is actually very interesting. Because at the surface level, it seems like the *only* way 
 for this algorithm to utilize its efficiency is to be using a large amount of data, but that's not
 exactly true. In order to need `log(n)` to exceed the number of `bits` the datatype uses, you need to 
@@ -142,9 +142,9 @@ set of every `byte` value.
 
 To put matters into perspective, if you were to try and sort all `4,294,967,296` possible integer values,
 you would **AT MOST** require `32` steps for each value, which isn't bad at all. Bubble sort would require
-`2^64 = 18,446,744,073,709,551,616`, whereas this would only require `O(n) = O(2^32 + 1) = 4,294,967,293`
+`2^64 = 18,446,744,073,709,551,616`, whereas this would only require `O(n) = 2^32 + 1 = 4,294,967,293`
 steps for `n = 2^32 + 1`, in the average case. Or in the worst case it would require 
-`O(n log n)` which in this case would only be `O(2^32 * 32) = O(137,438,953,472)`
+`O(n log n)` which in this case would only be `2^32 * 32 = 137,438,953,472`, in the worst case.
 ## Where do we go From Here?
 There is still room for further optimization and fine-tuning to this algorithm, namely in the 
 searching and inserting space. I've considered using a trie data-structure to reduce it down to 
