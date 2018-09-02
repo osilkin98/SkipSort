@@ -16,3 +16,5 @@ void skiplistInsert(Skiplist s, int key);
 
 /* delete a key from s */
 void skiplistDelete(Skiplist s, int key);
+
+void skiplistPrint(Skiplist s);
