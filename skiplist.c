@@ -232,7 +232,7 @@ skiplistDelete(Skiplist s, int key)
 int skiplistSafeInsert(Skiplist s, int key) {
 
     Skiplist toInsert;
-    int insertionHeight = chooseHeight(), steps = 0;
+    int steps = 0, insertionHeight = chooseHeight(), level;
 
     /* Check to see if the fist value is null, IE empty list */
     if(!s->next[BASE_LEVEL]) {
@@ -249,4 +249,22 @@ int skiplistSafeInsert(Skiplist s, int key) {
         }
         return steps;
     }
+
+    /* Now we know that we need to either SEARCH and either INCREMENT or INSERT
+     * for this, we'll create a randomized insertion height at which we will
+     * theoretically insert the element in. We will conduct a search exactly
+     * like when searching through for the insertion point in the insert function,
+     * except we will use the <= operator instead of < in the case that we DO
+     * find the key value, we can just simply increment it and return the number of
+     * steps performed
+     * */
+
+    for(level = s->height -1; level >= insertionHeight; --level) {
+        while(s->next[level] && /* the next element is non-NULL*/
+              s->next[level]->key <= key) /* and its key is less than OR EQUAL to ours*/
+        {
+
+        }
+    }
+
 }

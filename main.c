@@ -19,15 +19,19 @@ void printArrayFunc(int *data, int n) {
 
 int main(void) {
 
+    /*
     int *data = malloc(sizeof(int) * N);
 
     for(int i = 0; i < N; ++i) {
         data[i] = rand() % 17;
         //printf("%d ", data[i]);
     }
+    */
+
 
     /**sortData(data);**/
 
+    /*
     printf("printArray macro: ");
     printArray(data)
 
@@ -35,7 +39,7 @@ int main(void) {
 
     printArray(data);
 
-    free(data);
+    free(data);*/
 
     return 0;
 }
