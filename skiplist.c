@@ -7,7 +7,11 @@
 #define MAX_HEIGHT (32)
 
 /*
+ * Most of skiplist.c and skiplist.h was not written by me but was taken from
+ * http://www.cs.yale.edu/homes/aspnes/classes/223/examples/trees/skiplist
  *
+ * I've made modifications, to the code, mostly in the form of comments
+ * Both of these files lack in terms of documentation, so I've set out to fix that where needed
  * */
 
 
