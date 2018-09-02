@@ -86,6 +86,28 @@ skiplistDestroy(Skiplist s)
     }
 }
 
+
+
+/**
+ *
+ * @param s Skiplist object to print out
+ */
+void skiplistPrint(Skiplist s) {
+
+    register int level;
+    Skiplist iter;
+
+    for(level = s -> height -1; level >= 0; --level) {
+        iter = s;
+        printf("%d: ", level);
+        while(iter -> next[level]) {
+            iter = iter -> next[level];
+            printf("%d ", iter -> key);
+        }
+        printf("\n");
+    }
+}
+
 /* return maximum key less than or equal to key */
 /* or INT_MIN if there is none */
 int
@@ -108,27 +130,6 @@ skiplistSearch(Skiplist s, int key, bool increment)
 
     return s->key;
 }
-
-/**
- *
- * @param s Skiplist object to print out
- */
-void skiplistPrint(Skiplist s) {
-
-    register int level;
-    Skiplist iter;
-
-    for(level = s -> height -1; level >= 0; --level) {
-        iter = s;
-        printf("%d: ", level);
-        while(iter -> next[level]) {
-            iter = iter -> next[level];
-            printf("%d ", iter -> key);
-        }
-        printf("\n");
-    }
-}
-
 
 /* insert a new key into s */
 void
