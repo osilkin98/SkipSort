@@ -43,7 +43,7 @@ static Skiplist
 skiplistCreateNode(int key, int height)
 {
 
-    Skiplist s;
+    Skiplist s = NULL;
 
     assert(height > 0);
     assert(height <= MAX_HEIGHT);
@@ -54,13 +54,17 @@ skiplistCreateNode(int key, int height)
      * represented as (height - 1) skiplist pointers. */
     size_t memory_usage = sizeof(struct skiplist) + sizeof(struct skiplist *) * (height - 1);
 
-    printf("Using %lu bits of memory to create a new skiplist node\n", memory_usage);
+    // printf("Using %lu bits of memory to create a new skiplist node\n", memory_usage);
 
     s = malloc(memory_usage);
 
-    assert(s);
+    // assert(s);
 
-    printf("Initialized a new skiplist node at %p\n\n", s);
+    while(s == NULL) {
+        s = malloc(memory_usage);
+    }
+
+    // printf("Initialized a new skiplist node at %p\n\n", s);
 
     s->key = key;
     s->count = 1;
@@ -75,7 +79,7 @@ skiplistCreate(void)
 {
     srand((unsigned)time(0));
 
-    Skiplist s;
+    Skiplist s = NULL;
     int i;
 
     /* s is a dummy head element */
@@ -227,6 +231,7 @@ skiplistDelete(Skiplist s, int key)
     }
 
     free(target);
+    target = NULL;
 }
 
 int skiplistSafeInsert(Skiplist s, int key) {
@@ -269,8 +274,8 @@ int skiplistSafeInsert(Skiplist s, int key) {
             ++steps;
 
             /* we've found the key we're looking for */
-            if(s->next[level]->key == key) {
-                ++s->next[level]->count; /* increment & return */
+            if(s->key == key) {
+                ++s->count; /* increment & return */
                 return steps;
             }
 
@@ -306,6 +311,10 @@ int skiplistSafeInsert(Skiplist s, int key) {
      * instead concentrate on trying to insert the new node.
      * */
     Skiplist toInsert = skiplistCreateNode(key, insertionHeight);
+
+    while(toInsert == NULL) {
+        toInsert = skiplistCreateNode(key, insertionHeight);
+    }
 
     assert(toInsert); /* Check for whether or not the allocation succeeded */
 
