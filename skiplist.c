@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <limits.h>
+#include <stdio.h>
 
 #include "skiplist.h"
 
@@ -103,6 +104,27 @@ skiplistSearch(Skiplist s, int key)
 
     return s->key;
 }
+
+/**
+ *
+ * @param s Skiplist object to print out
+ */
+void skiplistPrint(Skiplist s) {
+
+    register int level;
+    Skiplist iter;
+
+    for(level = s -> height -1; level >= 0; --level) {
+        iter = s;
+        printf("%d: ", level);
+        while(iter -> next[level]) {
+            iter = iter -> next[level];
+            printf("%d ", iter -> key);
+        }
+        printf("\n");
+    }
+}
+
 
 /* insert a new key into s */
 void
