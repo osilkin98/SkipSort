@@ -140,9 +140,11 @@ perform the absolute worst ***WHEN*** you have a uniform distribution.
 In other words, the algorithm will only perform poorly if you purposefully try and sort an out-of-order
 set of every `byte` value. 
 
-To put matters into perspective, if you were to try and sort all `4294967296` possible integer values,
-you would **AT MOST** require `32` steps for each value, which isn't bad at all. 
-
+To put matters into perspective, if you were to try and sort all `4,294,967,296` possible integer values,
+you would **AT MOST** require `32` steps for each value, which isn't bad at all. Bubble sort would require
+`2^64 = 18,446,744,073,709,551,616`, whereas this would only require `O(n) = O(2^32 + 1) = 4,294,967,293`
+steps for `n = 2^32 + 1`, in the average case. Or in the worst case it would require 
+`O(n log n)` which in this case would only be `O(2^32 * 32) = O(137,438,953,472)`
 ## Where do we go From Here?
 There is still room for further optimization and fine-tuning to this algorithm, namely in the 
 searching and inserting space. I've considered using a trie data-structure to reduce it down to 
