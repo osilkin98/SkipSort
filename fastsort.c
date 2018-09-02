@@ -8,12 +8,7 @@
 #include "skiplist.h"
 
 
-
-/**
- *
- * @param data Single dimensional allocated array of integers to be sorted
- * @param N number of data members within the data array
- */
+/* sorts the data */
 void sortData(int *data, int N) {
 
     Skiplist slist = skiplistCreate();
@@ -51,3 +46,33 @@ void sortData(int *data, int N) {
     skiplistDestroy(slist);
 }
 
+int skipSortOptimized(int *data, int N) {
+    Skiplist slist = skiplistCreate();
+
+    register int i;
+
+    int total_steps = 0;
+    /* go through the dataset */
+    for(i = 0; i < N; ++i) {
+        /* insert/increment the data member at data[i] within the skiplist*/
+        total_steps += skiplistSafeInsert(slist, data[i]);
+
+    }
+
+    /* try and put k on the register */
+    register int k = 0;
+    while((slist = slist->next[0]) != NULL) {
+
+        /* put the value from the skiplist back into the data array, list->count times*/
+        for(i = k; i < k+slist->count; ++i){
+            data[i] = slist->key;
+        }
+        k = i;
+    }
+
+    /* Destroy the skiplist */
+    skiplistDestroy(slist);
+
+    /* N total steps performed during the last while loop */
+    return total_steps + N;
+}
