@@ -27,6 +27,15 @@ chooseHeight(void)
     return i;
 }
 
+/*** DEFINITION OF SKIPLIST STRUCT ***/
+/*
+struct skiplist {
+    int key;
+    int count;
+    int height;                // number of next pointers
+    struct skiplist *next[1];  // first of many
+}; */
+
 /* create a skiplist node with the given key and height */
 /* does not fill in next pointers */
 static Skiplist
