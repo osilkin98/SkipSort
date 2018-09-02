@@ -28,5 +28,11 @@ void skiplistDelete(Skiplist s, int key);
 /* print out the contents of s in a tower-like form */
 void skiplistPrint(Skiplist s);
 
-/* increment if found, otherwise insert if not found*/
+/* */
+/** Increment the node with value key if found, otherwise insert if not found
+ *
+ * @param s Skiplist header node to be operated on
+ * @param key Value of the key to be inserted or incremented
+ * @return The number of steps performed in total
+ */
 int skiplistSafeInsert(Skiplist s, int key);
