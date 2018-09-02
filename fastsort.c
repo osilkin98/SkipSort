@@ -76,3 +76,33 @@ int skipSortOptimized(int *data, int N) {
     /* N total steps performed during the last while loop */
     return total_steps + N;
 }
+
+
+void bubbleSort(int *data, int N) {
+    int i, j;
+    bool swapped;
+    for (i = 0; i < N -1; i++)
+    {
+        swapped = 0;
+        for (j = 0; j < N-i-1; j++)
+        {
+            if (data[j] > data[j+1])
+            {
+                swap(&data[j], &data[j+1]);
+                swapped = 1;
+            }
+        }
+
+        // IF no two elements were swapped by inner loop, then break
+        if (swapped == 0)
+            break;
+    }
+}
+
+
+void swap(int *xp, int *yp)
+{
+    int temp = *xp;
+    *xp = *yp;
+    *yp = temp;
+}

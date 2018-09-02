@@ -68,5 +68,7 @@ int skipSortOptimized(int* data, int N);
  */
 void bubbleSort(int *data, int N);
 
+void swap(int *xp, int *yp);
+
 
 #endif //CFASTSORT_FASTSORT_H
