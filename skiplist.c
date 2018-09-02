@@ -6,6 +6,7 @@
 #include "skiplist.h"
 
 #define MAX_HEIGHT (32)
+#define BASE_LEVEL 0
 
 /*
  * Most of skiplist.c and skiplist.h was not written by me but was taken from
