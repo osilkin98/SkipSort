@@ -28,5 +28,5 @@ int* sortData(int *data) {
         }
     }
 
-    skiplistDelete(slist);
+    skiplistDestroy(slist);
 }
