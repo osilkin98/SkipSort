@@ -107,7 +107,7 @@ class Skiplist(object):
         """
         random_height = self.chooseHeight(self.probability_base, self.max_tower_height)
 
-        current_node = self.head.next[self.height - 1]
+        current_node = self.head
 
         level = self.height - 1
 
@@ -188,8 +188,16 @@ class Skiplist(object):
 
         s = ""
         while iterate is not None:
-            s += iterate.value + ", "
+            s += str(iterate.value) + ", "
             iterate = iterate.next[0]
 
         print(s)
 
+
+if __name__ == '__main__':
+    slist = Skiplist()
+
+    for i in range(60):
+        slist.insert(randint(0, 50))
+
+    slist.print()
