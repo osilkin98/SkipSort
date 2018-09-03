@@ -1,4 +1,5 @@
 from sys import maxsize
+from random import randint
 from typing import List, Any, Union
 
 
@@ -73,7 +74,6 @@ class Skiplist(object):
 
         self.total = 0
 
-
     def search(self, key):
         """ Search within the Skiplist for the given key, and return the closest value less than or equal
          to the key which was specified to search for.
@@ -90,6 +90,16 @@ class Skiplist(object):
                 search_node = search_node.next[level]
 
         return search_node.value
+
+    @staticmethod
+    def chooseHeight(max_height):
+        """ Choose a height according to a geometric distribution
+
+        :param int max_height: The Maximum Height to calculate to
+        :return: The Calculated Height h such that 1 <= h <= max_height
+        :rtype: int
+        """
+
 
 
     def insert(self, key):
