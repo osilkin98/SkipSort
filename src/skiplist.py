@@ -85,7 +85,17 @@ class Skiplist(object):
 
         return level
 
+    ''' Skiplist diagram:
+    4 NIL ---------------------------------------------------------------> NIL
 
+    3 NIL -------------------------------> 10 ---------------------------> NIL
+
+    2 NIL ----------> 5 -----------------> 10 -------------------> 23 ---> NIL
+
+    1 NIL ----------> 5 ----------> 7 ---> 10 -----------> 23 ---> 25 ---> NIL
+
+    0 NIL ---> 3 ---> 5 ---> 6 ---> 7 ---> 10 ---> 17 ---> 23 ---> 25 ---> NIL
+    '''
 
     def insert(self, key):
         """ Inserts the given key into the skiplist, if it already isn't in it. If the key already
