@@ -139,7 +139,6 @@ class Skiplist(object):
         # not that's the case. We will do so by copying the state of current_node into a new variable
 
         lower_search = current_node
-        current_level = level
 
         # This starts the search below the random height index, since we already know the
         # Value we're looking for wasn't there
@@ -161,7 +160,15 @@ class Skiplist(object):
         # We know that the level will be random_height - 2, while current_node is on random_height - 1
         # We need to insert the new node at random_height -1 and set its height to random_height
 
-        # Reset the level counter
-        level = current_level
+        # instantiate the new node to insert
+        new_node = self.SNode(key, random_height)
 
-        new_node =
+        for level in range(new_node.height - 1, -1, -1):
+
+            # Put the current node to before the insertion point, IE where the value is immediately before the key
+            while current_node.next[level] is not None and current_node.next[level].value < new_node.value:
+                current_node = current_node.next[level]
+
+            # Perform list insertion
+            new_node.next[level] = current_node.next[level]
+            current_node.next[level] = new_node
