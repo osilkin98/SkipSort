@@ -104,8 +104,10 @@ class Skiplist(object):
 
     def insert(self, key):
         """ Inserts the given key into the skiplist, if it already isn't in it. If the key already
-         exists
+         exists, increment its value.
 
         :param int key: Key to insert into the skiplist
-        :return:
+        :returns: Nothing
+        :rtype: None
         """
+        random_height = randint()
