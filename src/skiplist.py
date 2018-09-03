@@ -71,4 +71,31 @@ class Skiplist(object):
         # This is the actual height value
         self.height = 1
 
+        self.total = 0
 
+
+    def search(self, key):
+        """ Search within the Skiplist for the given key, and return the closest value less than or equal
+         to the key which was specified to search for.
+
+        :param int key: Value to search for within the Skiplist
+        :return: Closest value less than or equal to the `key` parameter
+        :rtype: int
+        """
+        search_node = self.head.next[self.height - 1]
+
+        for level in range(self.height - 1, -1, -1):
+
+            while search_node.next[level] is not None and search_node.next[level].value <= key:
+                search_node = search_node.next[level]
+
+        return search_node.value
+
+
+    def insert(self, key):
+        """ Inserts the given key into the skiplist, if it already isn't in it. If the key already
+         exists
+
+        :param int key: Key to insert into the skiplist
+        :return:
+        """
