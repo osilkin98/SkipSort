@@ -163,6 +163,8 @@ class Skiplist(object):
         # instantiate the new node to insert
         new_node = self.SNode(key, random_height)
 
+        self.height = new_node.height if new_node.height > self.height else self.height
+
         for level in range(new_node.height - 1, -1, -1):
 
             # Put the current node to before the insertion point, IE where the value is immediately before the key
@@ -172,3 +174,22 @@ class Skiplist(object):
             # Perform list insertion
             new_node.next[level] = current_node.next[level]
             current_node.next[level] = new_node
+
+        # Increment the total amount of elements we have
+        self.total += 1
+
+    # Method to print the linkedlist
+    def print(self):
+        """ Basic method to print the linkedlist
+
+        :return:
+        """
+        iterate = self.head.next[0]
+
+        s = ""
+        while iterate is not None:
+            s += iterate.value + ", "
+            iterate = iterate.next[0]
+
+        print(s)
+
