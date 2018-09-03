@@ -145,6 +145,25 @@ you would **AT MOST** require `32` steps for each value, which isn't bad at all.
 `2^64 = 18,446,744,073,709,551,616`, whereas this would only require `O(n) = 2^32 + 1 = 4,294,967,293`
 steps for `n = 2^32 + 1`, in the average case. Or in the worst case it would require 
 `O(n log n)` which in this case would only be `2^32 * 32 = 137,438,953,472`, in the worst case.
+
+## Trials
+I've only tested it a couple of times with some of the other sorting algorithms and the 
+results are as follows:
+```python
+Using N=20000 with randomized datasets generated between a = 0 and b = 50
+Skipsort Time: 28.12337798802764secs
+Radix Time: 10.858482840994839secs
+Quick Sort Time: 34.37772156301071secs
+Timsort Time: 3.592856852017576secs
+```
+
+```python
+Using N=10000 with randomized datasets generated between a = 0 and b = 50
+Skip Time: 12.344698900007643secs
+Quick Sort Time: 10.54023400801816secs
+Standard Time: 1.6852746740041766secs
+```
+
 ## Where do we go From Here?
 There is still room for further optimization and fine-tuning to this algorithm, namely in the 
 searching and inserting space. I've considered using a trie data-structure to reduce it down to 
