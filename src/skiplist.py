@@ -92,13 +92,19 @@ class Skiplist(object):
         return search_node.value
 
     @staticmethod
-    def chooseHeight(max_height):
+    def chooseHeight(probability_base=2, max_height=32):
         """ Choose a height according to a geometric distribution
 
-        :param int max_height: The Maximum Height to calculate to
+        :param int probability_base: The Probability base used in the computation `rand() <= 1/(b^n)`. 2 By Default.
+        :param int max_height: The Maximum Height to calculate up to. 32 By Default
         :return: The Calculated Height h such that 1 <= h <= max_height
         :rtype: int
         """
+        level = 1
+        while level < max_height and randint(1, probability_base) == 0:
+            level += 1
+
+        return level
 
 
 
