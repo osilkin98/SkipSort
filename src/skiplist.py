@@ -105,4 +105,63 @@ class Skiplist(object):
         :returns: Nothing
         :rtype: None
         """
-        random_height = randint()
+        random_height = self.chooseHeight(self.probability_base, self.max_tower_height)
+
+        current_node = self.head.next[self.height - 1]
+
+        level = self.height - 1
+
+        # This will start from the tower height index and go until the random_height index (random height-1) is reached
+        # If self.height < random_height, this loop won't run, but if random_height > self.height, then we have
+        # No searching to do
+        while level >= random_height - 1:
+
+            # While the next node in the current node list isn't null and its value is less than or equal to
+            # The key that we were given, move current_node to be the next node
+            while current_node.next[level] is not None and current_node.next[level].value <= key:
+                current_node = current_node.next[level]
+
+            # If this is the key, just increment and return
+            if current_node.value == key:
+                # Increment and return
+                current_node.count += 1
+                return
+
+            level -= 1
+
+        # level after this will be equal to random_height - 2, 1 below the proposed height,
+        # However the current_node pointer will still be on index random_height -1, right
+        # In front of the position it will begin inserting into
+
+        # At this point the current_node pointer would point to the value right before
+        # The one at which we need to insert. However since we're not sure if the value
+        # Is already in the skiplist or not, we need to traverse deeper into the list to check whether or
+        # not that's the case. We will do so by copying the state of current_node into a new variable
+
+        lower_search = current_node
+        current_level = level
+
+        # This starts the search below the random height index, since we already know the
+        # Value we're looking for wasn't there
+        while level >= 0:
+
+            # Try to find the value
+            while lower_search.next[level] is not None and lower_search.next[level].value <= key:
+                lower_search = lower_search.next[level]
+
+            if lower_search.value == key:
+
+                # Increment and return
+                lower_search.count += 1
+                return
+
+            level -= 1
+
+        # At this point if we haven't found the value we're looking for already, we can give up and start inserting
+        # We know that the level will be random_height - 2, while current_node is on random_height - 1
+        # We need to insert the new node at random_height -1 and set its height to random_height
+
+        # Reset the level counter
+        level = current_level
+
+        new_node =
