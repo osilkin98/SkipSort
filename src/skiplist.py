@@ -19,12 +19,13 @@ class Skiplist(object):
 
             # If we don't have a previous node, then this is the first Node to be inserted
             if prev_node is None:
+
                 # Height of all entry towers, filled with null pointers
                 self.next = [None] * self.height
 
             else:
 
-                self.next = [] * self.height
+                self.next = [None] * self.height
 
                 traversal_node = prev_node
 
@@ -65,5 +66,9 @@ class Skiplist(object):
         self.probability_base = probability_base
         self.max_tower_height = max_tower_height
 
+        self.head = self.SNode(-maxsize - 1, max_tower_height)
+
+        # This is the actual height value
         self.height = 1
+
 
