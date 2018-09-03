@@ -193,6 +193,29 @@ class Skiplist(object):
         print(s)
 
 
+# For testing the algorithm
+def bubbleSort(data):
+    for passnum in range(len(data) - 1, 0, -1):
+        for i in range(passnum):
+            if data[i] > data[i + 1]:
+                temp = data[i]
+                data[i] = data[i + 1]
+                data[i + 1] = temp
+
+# skipsort algorithm implementation in python
+def skipSort(data: list):
+    slist = Skiplist()
+    while len(data) != 0:
+        slist.insert(data.pop(0))
+
+    head = slist.head.next[0]
+    while head is not None:
+        data += [head.value] * head.count
+        head = head.next[0]
+
+
+
+
 if __name__ == '__main__':
     slist = Skiplist()
 
