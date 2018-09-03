@@ -215,6 +215,24 @@ def skipSort(data: list):
         head = head.next[0]
 
 
+def quickSort(x):
+    if len(x) == 1 or len(x) == 0:
+        return x
+    else:
+        pivot = x[0]
+        i = 0
+        for j in range(len(x)-1):
+            if x[j+1] < pivot:
+                x[j+1],x[i+1] = x[i+1], x[j+1]
+                i += 1
+        x[0],x[i] = x[i],x[0]
+        first_part = quickSort(x[:i])
+        second_part = quickSort(x[i+1:])
+        first_part.append(x[i])
+        return first_part + second_part
+
+
+
 def test(sort, N=100, a=0, b=maxsize):
     data = [randint(a, b) for i in range(N)]
     sort(data)
@@ -228,24 +246,31 @@ def stlSort(data: list):
 if __name__ == '__main__':
     # slist = Skiplist()
 
-    N = 10000
+    N = 20000
     a, b = 0, 50
 
+    print("Using N={} with randomized datasets generated between a = {} and b = {}".format(N, a, b))
 
     import timeit
-    
-    bubble_time = timeit.timeit("test(bubbleSort, N={}, a={}, b={})".format(N, a, b),
-                                number=100, setup="from __main__ import test, bubbleSort")
 
-    print("Bubble Time: {}secs".format(bubble_time))
+    skip_time = timeit.timeit("test(skipSort, N={}, a={}, b={})".format(N, a, b),
+                              number=100, setup="from __main__ import test, skipSort")
+    print("Skipsort Time: {}secs".format(skip_time))
+
+    quickTime = timeit.timeit("test(quickSort, N={}, a={}, b={})".format(N, a, b),
+                              number=100, setup="from __main__ import test, quickSort")
+
+    print("Quick Sort Time: {}secs".format(quickTime))
 
     stltime = timeit.timeit("test(stlSort, N={}, a={}, b={})".format(N, a, b),
                             number=100, setup="from __main__ import test, stlSort")
 
-    print("Standard Time: {}secs".format(stltime))
+    print("Timsort Time: {}secs".format(stltime))
 
-    skip_time = timeit.timeit("test(skipSort, N={}, a={}, b={})".format(N, a, b),
-                              number=100, setup="from __main__ import test, skipSort")
-    print("Skip Time: {}secs".format(skip_time))
+    '''
+    bubble_time = timeit.timeit("test(bubbleSort, N={}, a={}, b={})".format(N, a, b),
+                                number=100, setup="from __main__ import test, bubbleSort")
 
+    print("Bubble Time: {}secs".format(bubble_time))
+    '''
     # slist.print()
