@@ -202,6 +202,7 @@ def bubbleSort(data):
                 data[i] = data[i + 1]
                 data[i + 1] = temp
 
+
 # skipsort algorithm implementation in python
 def skipSort(data: list):
     slist = Skiplist()
@@ -214,12 +215,37 @@ def skipSort(data: list):
         head = head.next[0]
 
 
+def test(sort, N=100, a=0, b=maxsize):
+    data = [randint(a, b) for i in range(N)]
+    sort(data)
+    data.clear()
+
+
+def stlSort(data: list):
+    data.sort()
 
 
 if __name__ == '__main__':
-    slist = Skiplist()
+    # slist = Skiplist()
 
-    for i in range(60):
-        slist.insert(randint(0, 50))
+    N = 10000
+    a, b = 0, 50
 
-    slist.print()
+
+    import timeit
+    
+    bubble_time = timeit.timeit("test(bubbleSort, N={}, a={}, b={})".format(N, a, b),
+                                number=100, setup="from __main__ import test, bubbleSort")
+
+    print("Bubble Time: {}secs".format(bubble_time))
+
+    stltime = timeit.timeit("test(stlSort, N={}, a={}, b={})".format(N, a, b),
+                            number=100, setup="from __main__ import test, stlSort")
+
+    print("Standard Time: {}secs".format(stltime))
+
+    skip_time = timeit.timeit("test(skipSort, N={}, a={}, b={})".format(N, a, b),
+                              number=100, setup="from __main__ import test, skipSort")
+    print("Skip Time: {}secs".format(skip_time))
+
+    # slist.print()
