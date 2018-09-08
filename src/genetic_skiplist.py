@@ -28,7 +28,8 @@ def sort_and_add(times_list: list, index, base, n, a, b, trials):
     print("Time taken: " + str(times_list[index]) + " secs\n")
 
 
-def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths=None, trials=10, start=2.0, stop=8.0, increment=1.0):
+def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None,
+                                         trials=10, start=2.0, stop=8.0, increment=1.0):
 
     data = []
     base = start
@@ -42,7 +43,17 @@ def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths=None, trials=10, sta
         threads = []
 
         for i, n in enumerate(lengths):
-            my_thread = threading.Thread(target=sort_and_add, args=(length_times, i+1, base, n, a, b, trials))
+            my_thread = threading.Thread(target=sort_and_add,
+                                         kwargs={'times_list': length_times,
+                                                 'index': i+1,
+                                                 'base': base,
+                                                 'n': n,
+                                                 'a': a,
+                                                 'b': b,
+                                                 'trials': trials})
+
+            print("{}Starting Thread{} for {}N={}{}".format(Fore.LIGHTGREEN_EX, Fore.RESET, Fore.CYAN, n, Fore.RESET))
+
             my_thread.start()
             print("Thread " + str(i) + " for " + str(n) + " started")
             threads.append(my_thread)
