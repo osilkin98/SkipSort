@@ -1,5 +1,5 @@
 from sys import maxsize
-from random import randint
+import random
 from math import ceil
 
 
@@ -45,6 +45,7 @@ class Skiplist(object):
          the default value used will be `int(math.ceil( b^5 ))` where `b` is the probability base specified
          in the first parameter.
         """
+        random.seed()
 
         self.probability_base = probability_base
         self.max_tower_height = max_tower_height if max_tower_height is not None else int(ceil(probability_base ** 5))
@@ -77,13 +78,13 @@ class Skiplist(object):
     def chooseHeight(probability_base=2, max_height=32):
         """ Choose a height according to a geometric distribution
 
-        :param int probability_base: The Probability base used in the computation `rand() <= 1/(b^n)`. 2 By Default.
+        :param float probability_base: The Probability base used in the computation `rand() <= 1/(b^n)`. 2 By Default.
         :param int max_height: The Maximum Height to calculate up to. 32 By Default
         :return: The Calculated Height h such that 1 <= h <= max_height
         :rtype: int
         """
         level = 1
-        while level < max_height and randint(1, probability_base) == 0:
+        while level < max_height and random.random() <= (1/(probability_base ** level)):
             level += 1
 
         return level
