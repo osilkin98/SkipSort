@@ -3,16 +3,29 @@ from sys import maxsize
 from timeit import timeit
 from random import randint
 import numpy as np
+from time import time
 import matplotlib.pyplot as plt
 import pandas as pd
 import os
-
+import threading
 
 # This is a wrapper for the standard test function exclusive to skipsort
 def skipsort_test(base=2, N=100, a=0, b=maxsize):
     data = [randint(a, b) for i in range(N)]
     skipSort(data, base)
     data.clear()
+
+
+def sort_and_add(times_list: list, index, base, n, a, b, trials):
+
+    '''print("Running " + str(trials) + " trials for skipsort with a probability base of Pb = " + str(base) +
+          ", on a dataset of N=" + str(n) + "\nwith randomized datasets generated between a = " +
+          str(a) + " and b = " + str(b))
+    '''
+    times_list[index] = timeit(stmt="skipsort_test(base={}, N={}, a={}, b={})".format(base, n, a, b),
+                               number=trials, setup="from __main__ import skipsort_test")
+
+    print("Time taken: " + str(times_list[index]) + " secs\n")
 
 
 def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths=None, trials=10, start=2.0, stop=8.0, increment=1.0):
@@ -22,19 +35,28 @@ def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths=None, trials=10, sta
     while base <= stop + increment:
 
         # Basic array
-        length_times = [base]
+        length_times = [base] + [0] * len(lengths)
 
-        for n in lengths:
-            print("Running " + str(trials) + " trials for skipsort with a probability base of Pb = " + str(base) +
-                  ", on a dataset of N=" + str(n) + "\nwith randomized datasets generated between a = " +
-                  str(a) + " and b = " + str(b))
+        t = time()
 
-            base_time = timeit(stmt="skipsort_test(base={}, N={}, a={}, b={})".format(base, n, a, b), number=trials,
-                               setup="from __main__ import skipsort_test")
+        threads = []
 
-            length_times.append(base_time)
+        for i, n in enumerate(lengths):
+            my_thread = threading.Thread(target=sort_and_add, args=(length_times, i+1, base, n, a, b, trials))
+            my_thread.start()
+            print("Thread " + str(i) + " for " + str(n) + " started")
+            threads.append(my_thread)
 
-            print("Time taken: " + str(base_time) + " secs\n")
+        print("Running join with map")
+        map(lambda thread: thread.join(), threads)
+
+        t = time() - t
+
+        print("Time taken in total: {}".format(t))
+        '''
+        for i, n in enumerate(lengths):
+            threads.append(threading.Thread(target=sort_and_add(length_times, i+1, base, n, a, b, trials)))
+        '''
 
         # x: base, [Y]: times taken to sort data using probability base b with variable data sizes
         data.append(length_times)
@@ -72,8 +94,8 @@ if __name__ == '__main__':
     n = [500, 750, 1000, 1250, 1500]
 
     trials = 100
-    start, stop = 1, 8
-    inc = 0.1
+    start, stop = 1.35, 1.4
+    inc = 0.01
 
     fpath = "{}/data/datafileTrials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
                                                                            trials,
