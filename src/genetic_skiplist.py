@@ -75,12 +75,22 @@ if __name__ == '__main__':
     start, stop = 1, 8
     inc = 0.1
 
-    data = sort_with_ranged_bases(a=a, b=b, lengths=n, trials=trials, start=start, stop=stop, increment=inc)
+    fpath = "{}/data/datafileTrials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
+                                                                           trials,
+                                                                           str(stop).replace('.', ''),
+                                                                           str(start).replace('.', ''),
+                                                                           str(inc).replace('.', ''))
+
+    if os.path.exists(fpath):
+        data = np.loadtxt(fpath)
+
+    else:
+        data = sort_with_ranged_bases(a=a, b=b, lengths=n, trials=trials, start=start, stop=stop, increment=inc)
 
     # If the filepath doesn't exist
     if not os.path.exists("{}/data".format(os.getcwd())):
         # Make the directories
-        os.makedirs("{}/data")
+        os.makedirs("{}/data".format(os.getcwd()))
     try:
         # Try to save the data as a text file
         np.savetxt(fname="{}/data/datafileTrials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
