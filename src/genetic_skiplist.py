@@ -15,7 +15,7 @@ def skipsort_test(base=2, N=100, a=0, b=maxsize):
     data.clear()
 
 
-def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths: tuple=None, trials=10, start=2.0, stop=8.0, increment=1.0):
+def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths=None, trials=10, start=2.0, stop=8.0, increment=1.0):
 
     data = []
     base = start
@@ -68,12 +68,14 @@ def sort_with_ranged_data(a=-maxsize-1, b=maxsize, base=1.5, trials=100,
 
 
 if __name__ == '__main__':
-    a, b, n = 0, 2 ** 31, 1000
+    a, b = 0, 2 ** 31
+    n = [500, 750, 1000, 1250, 1500]
+
     trials = 100
     start, stop = 1, 8
     inc = 0.01
 
-    data = sort_with_ranged_bases(a=a, b=b, n=n, trials=trials, start=start, stop=stop, increment=inc)
+    data = sort_with_ranged_bases(a=a, b=b, lengths=n, trials=trials, start=start, stop=stop, increment=inc)
 
     if not os.path.exists("{}/data".format(os.getcwd())):
         os.makedirs("{}/data")
@@ -93,8 +95,8 @@ if __name__ == '__main__':
     sort_time_series = pd.Series(data=data[:, 1], index=data[:, 0])
 
     plot = sort_time_series.plot(
-        title="Time Taken to Sort {} Members Generated on [{}, {}]\n{} Times, Incrementing the Probability Bases with {}".format(
-            n, a, b, trials, inc))
+        title="Time Taken to Sort {} Members Generated on [{}, {}]\n\
+{} Times, Incrementing the Probability Bases with {}".format(n, a, b, trials, inc))
 
     plot.set_xlabel("Probability Bases")
     plot.set_ylabel("Time Taken (seconds)")
