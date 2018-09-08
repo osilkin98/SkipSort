@@ -193,15 +193,6 @@ class Skiplist(object):
         print(s)
 
 
-# For testing the algorithm
-def bubbleSort(data):
-    for passnum in range(len(data) - 1, 0, -1):
-        for i in range(passnum):
-            if data[i] > data[i + 1]:
-                temp = data[i]
-                data[i] = data[i + 1]
-                data[i + 1] = temp
-
 
 # skipsort algorithm implementation in python
 def skipSort(data: list):
@@ -281,8 +272,8 @@ def stlSort(data: list):
 if __name__ == '__main__':
     # slist = Skiplist()
 
-    N, trials = 100000, 10
-    a, b = 0, 50
+    N, trials = 10000, 10
+    a, b = 0, 512
 
     print("Running {} trials for each sorting algorithm on a dataset of N={}\n\
 with randomized datasets generated between a = {} and b = {}".format(trials, N, a, b))
