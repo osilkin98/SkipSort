@@ -1,3 +1,19 @@
+from skiplist import Skiplist
+
+
+# skipsort algorithm implementation in python
+def skipSort(data: list):
+    slist = Skiplist()
+    while len(data) != 0:
+        slist.insert(data.pop(0))
+
+    head = slist.head.next[0]
+    while head is not None:
+        data += [head.value] * head.count
+        head = head.next[0]
+
+
+
 
 # For testing the algorithm
 def bubbleSort(data):

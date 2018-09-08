@@ -193,22 +193,6 @@ class Skiplist(object):
         print(s)
 
 
-
-# skipsort algorithm implementation in python
-def skipSort(data: list):
-    slist = Skiplist()
-    while len(data) != 0:
-        slist.insert(data.pop(0))
-
-    head = slist.head.next[0]
-    while head is not None:
-        data += [head.value] * head.count
-        head = head.next[0]
-
-
-
-
-
 def test(sort, N=100, a=0, b=maxsize):
     data = [randint(a, b) for i in range(N)]
     sort(data)
