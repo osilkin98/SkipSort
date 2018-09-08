@@ -38,19 +38,17 @@ def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, n=100, trials=10, start=2.0,
 
 if __name__ == '__main__':
 
-    a, b, n = 0, 7, 65
-    trials = 1000
-    start, stop = 0.05, 0.1
-    inc = 0.001
+    a, b, n = 0, maxsize, 10000
+    trials = 10
+    start, stop = 0.1, 8.0
+    inc = 0.1
 
     data = sort_with_ranged_bases(a=a, b=b, n=n, trials=trials, start=start, stop=stop, increment=inc)
 
     sort_time_series = pd.Series(data=data[:, 1], index=data[:, 0])
 
     plot = sort_time_series.plot(
-        title="Time Taken to Sort {} Members Generated on [{}, {}], {} times".format(n, a, b, trials),
-        xticks=data[:, 0][::int(len(data)/10)]
-    )
+        title="Time Taken to Sort {} Members Generated on [{}, {}], {} times".format(n, a, b, trials))
 
     plot.set_xlabel("Probability Bases")
     plot.set_ylabel("Time Taken (seconds)")
