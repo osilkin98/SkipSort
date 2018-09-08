@@ -36,6 +36,27 @@ def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, n=100, trials=10, start=2.0,
     return np.array(data)
 
 
+def sort_with_ranged_data(a=-maxsize-1, b=maxsize, base=1.5, trials=100,
+                          start=0, stop=1000, increment=10, type='linear'):
+
+    data = []
+    n = start if start > 0 else start + increment
+    while n <= stop:
+        print("Running "+str(trials)+" trials for skipsort with a probability base of Pb = " +str(base) +
+              ", on a dataset of N=" + str(n) + "\nwith randomized datasets generated between a = "+
+              str(a)+" and b = "+str(b) + ", with " + type + " incrementation")
+
+        num_time = timeit("skipsort_test(base={}, N={}, a={}, b={})".format(base, n, a, b),
+                          number=trials, setup="from __main__ import skipsort_test")
+
+        # x: number of elements, # y: time taken to sort data with number of elements x and probability base Pb
+        data.append([n, num_time])
+
+        print("Time taken: "+str(num_time)+" secs\n")
+
+        n = n + increment if type.lower() == 'linear' else n * increment
+
+
 if __name__ == '__main__':
 
     a, b, n = 0, maxsize, 10000
