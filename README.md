@@ -149,7 +149,7 @@ steps for `n = 2^32 + 1`, in the average case. Or in the worst case it would req
 ## Trials
 I've only tested it a couple of times with some of the other sorting algorithms and the 
 results are as follows:
-```python
+```bash
 Using N=20000 with randomized datasets generated between a = 0 and b = 50
 Skipsort Time: 28.12337798802764secs
 Radix Time: 10.858482840994839secs
@@ -157,7 +157,7 @@ Quick Sort Time: 34.37772156301071secs
 Timsort Time: 3.592856852017576secs
 ```
 
-```python
+```bash
 Using N=10000 with randomized datasets generated between a = 0 and b = 50
 Skip Time: 12.344698900007643secs
 Quick Sort Time: 10.54023400801816secs
