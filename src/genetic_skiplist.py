@@ -73,35 +73,42 @@ if __name__ == '__main__':
 
     trials = 100
     start, stop = 1, 8
-    inc = 0.01
+    inc = 0.1
 
     data = sort_with_ranged_bases(a=a, b=b, lengths=n, trials=trials, start=start, stop=stop, increment=inc)
 
+    # If the filepath doesn't exist
     if not os.path.exists("{}/data".format(os.getcwd())):
+        # Make the directories
         os.makedirs("{}/data")
     try:
+        # Try to save the data as a text file
         np.savetxt(fname="{}/data/datafileTrials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
                                                                            trials,
                                                                            str(stop).replace('.', ''),
                                                                            str(start).replace('.', ''),
                                                                            str(inc).replace('.', '')),
                    X=data)
-
+    # If it failed to write the data to a text file, print it to stdout
     except Exception as e:
         print(e)
         for X in data:
             print(X)
 
-    sort_time_series = pd.Series(data=data[:, 1], index=data[:, 0])
+    sorting_time_data = pd.DataFrame(data=data[:, 1:], index=data[:, 0], columns=["N="+str(i) for i in n])
 
-    plot = sort_time_series.plot(
-        title="Time Taken to Sort {} Members Generated on [{}, {}]\n\
-{} Times, Incrementing the Probability Bases with {}".format(n, a, b, trials, inc))
+    title = "Time Taken to Sort Data of Variable Probability Bases and Data Length,\n"+\
+            "Running "+str(trials)+" Trials, and Generating Values on ["+str(a)+", "+str(b)+"]"
 
-    plot.set_xlabel("Probability Bases")
-    plot.set_ylabel("Time Taken (seconds)")
+    plt.figure()
+
+    plot = sorting_time_data.plot(
+        title=title, x="Probability Bases", y="Seconds"
+    )
 
     plt.show()
+
+
 
     '''
     a, b, n = 0, 2 ** 31, 1000
