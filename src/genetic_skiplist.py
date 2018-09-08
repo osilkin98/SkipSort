@@ -5,6 +5,7 @@ from random import randint
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import os
 
 
 # This is a wrapper for the standard test function exclusive to skipsort
@@ -65,13 +66,23 @@ def sort_with_ranged_data(a=-maxsize-1, b=maxsize, base=1.5, trials=100,
 
     return np.array(data)
 
+
 if __name__ == '__main__':
     a, b, n = 0, 2 ** 31, 1000
     trials = 100
-    start, stop = 2.0, 4.0
-    inc = 1
+    start, stop = 1, 8
+    inc = 0.01
 
     data = sort_with_ranged_bases(a=a, b=b, n=n, trials=trials, start=start, stop=stop, increment=inc)
+
+    if not os.path.exists("{}/data".format(os.getcwd())):
+        os.makedirs("{}/data")
+
+    np.savetxt("{}/data/datafileTrials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
+                                                                       trials,
+                                                                       str(stop).replace('.', ''),
+                                                                       str(start).replace('.', ''),
+                                                                       str(inc).replace('.', '')))
 
     sort_time_series = pd.Series(data=data[:, 1], index=data[:, 0])
 
