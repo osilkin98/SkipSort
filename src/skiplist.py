@@ -1,4 +1,3 @@
-from sys import maxsize
 
 
 class Skiplist(object):
