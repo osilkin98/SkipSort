@@ -21,10 +21,10 @@ def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, n=100, trials=10, start=2, s
         base_time = timeit(stmt="skipsort_test(base={}, N={}, a={}, b={})".format(base, n, a, b), number=trials,
                            setup="from __main__ import skipsort_test")
 
-        print("Time taken: " + str(base_time) + " secs")
+        print("Time taken: " + str(base_time) + " secs\n")
 
         base += increment
 
 
-if __name__ == 'main':
-    sort_with_ranged_bases()
+if __name__ == '__main__':
+    sort_with_ranged_bases(a=0, b=8, n=1000, trials=1000, start=1, )

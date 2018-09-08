@@ -4,7 +4,7 @@ from random import randint
 
 
 # skipsort algorithm implementation in python
-def skipSort(data: list, probability_base=2, ):
+def skipSort(data: list, probability_base=2):
     slist = Skiplist(probability_base)
     while len(data) != 0:
         slist.insert(data.pop(0))
