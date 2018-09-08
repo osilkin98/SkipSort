@@ -77,12 +77,18 @@ if __name__ == '__main__':
 
     if not os.path.exists("{}/data".format(os.getcwd())):
         os.makedirs("{}/data")
+    try:
+        np.savetxt(fname="{}/data/datafileTrials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
+                                                                           trials,
+                                                                           str(stop).replace('.', ''),
+                                                                           str(start).replace('.', ''),
+                                                                           str(inc).replace('.', '')),
+                   X=data)
 
-    np.savetxt("{}/data/datafileTrials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
-                                                                       trials,
-                                                                       str(stop).replace('.', ''),
-                                                                       str(start).replace('.', ''),
-                                                                       str(inc).replace('.', '')))
+    except Exception as e:
+        print(e)
+        for X in data:
+            print(X)
 
     sort_time_series = pd.Series(data=data[:, 1], index=data[:, 0])
 
