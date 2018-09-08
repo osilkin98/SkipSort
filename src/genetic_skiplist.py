@@ -3,18 +3,22 @@ from sys import maxsize
 from timeit import timeit
 from random import randint
 import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
 
+
+# This is a wrapper for the standard test function exclusive to skipsort
 def skipsort_test(base=2, N=100, a=0, b=maxsize):
     data = [randint(a, b) for i in range(N)]
     skipSort(data, base)
     data.clear()
 
 
-def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, n=100, trials=10, start=2, stop=8, increment=1.0):
+def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, n=100, trials=10, start=2.0, stop=8.0, increment=1.0):
 
     data = []
     base = start
-    while base <= stop:
+    while base <= stop + increment:
         print("Running "+str(trials)+" trials for skipsort with a probability base of Pb = " +str(base) +
               ", on a dataset of N=" +str(n) + "\nwith randomized datasets generated between a = "+
               str(a)+" and b = "+str(b))
@@ -31,5 +35,24 @@ def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, n=100, trials=10, start=2, s
 
     return np.array(data)
 
+
 if __name__ == '__main__':
-    data = sort_with_ranged_bases(a=0, b=7, n=65, trials=1000, start=1, stop=4, increment=0.01)
+
+    a, b, n = 0, 7, 65
+    trials = 1000
+    start, stop = 0.05, 0.1
+    inc = 0.001
+
+    data = sort_with_ranged_bases(a=a, b=b, n=n, trials=trials, start=start, stop=stop, increment=inc)
+
+    sort_time_series = pd.Series(data=data[:, 1], index=data[:, 0])
+
+    plot = sort_time_series.plot(
+        title="Time Taken to Sort {} Members Generated on [{}, {}], {} times".format(n, a, b, trials),
+        xticks=data[:, 0][::int(len(data)/10)]
+    )
+
+    plot.set_xlabel("Probability Bases")
+    plot.set_ylabel("Time Taken (seconds)")
+
+    plt.show()
