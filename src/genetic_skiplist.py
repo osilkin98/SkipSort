@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import os
 import threading
+from colorama import Fore
+
 
 # This is a wrapper for the standard test function exclusive to skipsort
 def skipsort_test(base=2, N=100, a=0, b=maxsize):
@@ -18,14 +20,14 @@ def skipsort_test(base=2, N=100, a=0, b=maxsize):
 
 def sort_and_add(times_list: list, index, base, n, a, b, trials):
 
-    '''print("Running " + str(trials) + " trials for skipsort with a probability base of Pb = " + str(base) +
+    print("Running " + str(trials) + " trials for skipsort with a probability base of Pb = " + str(base) +
           ", on a dataset of N=" + str(n) + "\nwith randomized datasets generated between a = " +
           str(a) + " and b = " + str(b))
-    '''
+
     times_list[index] = timeit(stmt="skipsort_test(base={}, N={}, a={}, b={})".format(base, n, a, b),
                                number=trials, setup="from __main__ import skipsort_test")
 
-    print("Time taken: " + str(times_list[index]) + " secs\n")
+    print("{}[SORTING DONE]{}Time taken: " + str(times_list[index]) + " secs\n")
 
 
 def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None,
@@ -55,15 +57,19 @@ def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None,
             print("{}Starting Thread{} for {}N={}{}".format(Fore.LIGHTGREEN_EX, Fore.RESET, Fore.CYAN, n, Fore.RESET))
 
             my_thread.start()
-            print("Thread " + str(i) + " for " + str(n) + " started")
+            print(Fore.GREEN+"Thread " + str(i) + " for " + str(n) + " started" + Fore.RESET)
             threads.append(my_thread)
 
-        print("Running join with map")
-        map(lambda thread: thread.join(), threads)
+        print("\nRunning join for all threads\n")
+
+        for i in range(len(threads) - 1, -1, -1):
+            print("Waiting for {}Thread {}{}".format(Fore.YELLOW, i, Fore.RESET))
+            threads[i].join()
 
         t = time() - t
 
-        print("Time taken in total: {}".format(t))
+        print("{}Time taken in total: {:.5f}{} secs".format(Fore.GREEN, t, Fore.RESET))
+
         '''
         for i, n in enumerate(lengths):
             threads.append(threading.Thread(target=sort_and_add(length_times, i+1, base, n, a, b, trials)))
