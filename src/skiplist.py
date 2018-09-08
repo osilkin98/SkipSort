@@ -1,5 +1,4 @@
 from sys import maxsize
-from random import randint
 
 
 class Skiplist(object):
@@ -192,51 +191,3 @@ class Skiplist(object):
 
         print(s)
 
-
-def test(sort, N=100, a=0, b=maxsize):
-    data = [randint(a, b) for i in range(N)]
-    sort(data)
-    data.clear()
-
-
-def stlSort(data: list):
-    data.sort()
-
-
-if __name__ == '__main__':
-    # slist = Skiplist()
-
-    N, trials = 10000, 10
-    a, b = 0, 512
-
-    print("Running {} trials for each sorting algorithm on a dataset of N={}\n\
-with randomized datasets generated between a = {} and b = {}".format(trials, N, a, b))
-
-    import timeit
-
-    skip_time = timeit.timeit("test(skipSort, N={}, a={}, b={})".format(N, a, b),
-                              number=trials, setup="from __main__ import test, skipSort")
-    print("Skipsort Time: {}secs".format(skip_time))
-
-    skip_time = timeit.timeit("test(radix_sort, N={}, a={}, b={})".format(N, a, b),
-                              number=trials, setup="from __main__ import test, radix_sort")
-
-    print("Radix Time: {}secs".format(skip_time))
-
-    quickTime = timeit.timeit("test(quickSort, N={}, a={}, b={})".format(N, a, b),
-                              number=trials, setup="from __main__ import test, quickSort")
-
-    print("Quick Sort Time: {}secs".format(quickTime))
-
-    stltime = timeit.timeit("test(stlSort, N={}, a={}, b={})".format(N, a, b),
-                            number=trials, setup="from __main__ import test, stlSort")
-
-    print("Timsort Time: {}secs".format(stltime))
-
-    '''
-    bubble_time = timeit.timeit("test(bubbleSort, N={}, a={}, b={})".format(N, a, b),
-                                number=trials, setup="from __main__ import test, bubbleSort")
-
-    print("Bubble Time: {}secs".format(bubble_time))
-    '''
-    # slist.print()
