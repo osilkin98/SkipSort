@@ -89,7 +89,7 @@ def quickSortIterative(arr, l=0, h=None):
             stack[top] = h
 
 # Recursive impleentation
-def quickSort(x):
+def quickSortRecursive(x):
     if len(x) == 1 or len(x) == 0:
         return x
     else:
@@ -100,8 +100,8 @@ def quickSort(x):
                 x[j+1],x[i+1] = x[i+1], x[j+1]
                 i += 1
         x[0],x[i] = x[i],x[0]
-        first_part = quickSort(x[:i])
-        second_part = quickSort(x[i+1:])
+        first_part = quickSortRecursive(x[:i])
+        second_part = quickSortRecursive(x[i + 1:])
         first_part.append(x[i])
         return first_part + second_part
 
