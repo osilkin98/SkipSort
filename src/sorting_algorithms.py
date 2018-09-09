@@ -25,27 +25,6 @@ def bubbleSort(data):
                 data[i + 1] = temp
 
 
-def partition(arr, low, high):
-    i = (low - 1)  # index of smaller element
-    pivot = arr[high]  # pivot
-
-    for j in range(low, high):
-
-        # If current element is smaller
-        # than or equal to pivot
-        if arr[j] <= pivot:
-            # increment index of
-            # smaller element
-            i += 1
-            arr[i], arr[j] = arr[j], arr[i]
-
-    arr[i + 1], arr[high] = arr[high], arr[i + 1]
-    return (i + 1)
-
-
-# Python program for implementation of Quicksort
-
-# This function is same in both iterative and recursive
 def partition(arr, l, h):
     i = (l - 1)
     x = arr[h]
@@ -127,7 +106,7 @@ def quickSort(x):
         return first_part + second_part
 
 
-def radix_sort(alist, base=10):
+def radixSort(alist, base=10):
     if alist == []:
         return
 
@@ -169,7 +148,7 @@ def test(sort, N=100, a=0, b=maxsize):
     data.clear()
 
 
-def stlSort(data: list):
+def timSort(data: list):
     data.sort()
 
 
