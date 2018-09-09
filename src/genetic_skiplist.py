@@ -1,4 +1,4 @@
-from sorting_algorithms import skip_sort, quickSortRecursive, radixSort, quickSortIterative, timSort
+from sorting_algorithms import skip_sort, quickSortRecursive, radixSort, quick_sort, timSort
 from sys import maxsize
 from timeit import timeit
 import random
@@ -542,7 +542,7 @@ As The Value Range Increases From {} to {}".format(num_elements, trials, (start-
 
 
 def create_elements_vs_time_graph(a=0, b=256, start=10, end=5000, increment=5, coefficient=5.0, trials=10,
-                                  sorts=(skip_sort, quickSortIterative, timSort), fpath=None, mode='linear'):
+                                  sorts=(skip_sort, quick_sort, timSort), fpath=None, mode='linear'):
 
     fpath = fpath if fpath is not None else\
         "{}/data/TimeOverElements{}-{}_i{}a{}{}.txt".format(os.getcwd(), end, start, increment,
@@ -605,7 +605,7 @@ With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
 
 if __name__ == '__main__':
     create_elements_vs_time_graph(a=0, b=1024, start=300, end=25000,
-                                  sorts=(skip_sort, radixSort, quickSortIterative, timSort),
+                                  sorts=(skip_sort, radixSort, quick_sort, timSort),
                                   increment=100, trials=50, mode='linear')
 
     # create_elements_vs_time_graph(a=0, b=1000000, start=100, end=1000000, bases=(2, 10),

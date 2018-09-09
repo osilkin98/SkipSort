@@ -16,7 +16,7 @@ def skip_sort(data: list, probability_base=2):
 
 
 # For testing the algorithm
-def bubbleSort(data):
+def bubble_sort(data):
     for passnum in range(len(data) - 1, 0, -1):
         for i in range(passnum):
             if data[i] > data[i + 1]:
@@ -43,7 +43,7 @@ def partition(arr, l, h):
 # arr[] --> Array to be sorted,
 # l  --> Starting index,
 # h  --> Ending index
-def quickSortIterative(arr, l=0, h=None):
+def quick_sort(arr, l=0, h=None):
     # Create an auxiliary stack
     h = len(arr) - 1 if h is None else h
 
