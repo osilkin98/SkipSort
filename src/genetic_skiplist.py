@@ -33,7 +33,8 @@ def sort_test(sort, N=100, a=0, b=maxsize):
         # Populate the array
         data = [randint(a, b) for i in range(N)]
     else:
-        data = [random.random * (b - a) + a for i in range(N)]
+        # Populate the array in a float way
+        data = [random.random() * (b - a) + a for i in range(N)]
 
     sort(data)
 
@@ -240,6 +241,7 @@ def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10,
     :param int | float stop_value: The Highest Value we will go to before halting data creation
     :param int | float increment: How Much we will increase by value each iteration. This is the variable in this case.
     :param int num_elements: Total number of elements to use for our dataset. This number stays constant
+    :param list | tuple sorts: List of Sorting Function Objects to use on the data
     :param int trials: Number of trials to average a single datapoint over, default is 100.
     :param float probability_base: Base to use when computing probability. I.E. `1/b^n >= p` where `b`
      denotes the base. This value is 2 by default, however it can be scaled accordingly. Generally, the base
@@ -289,6 +291,7 @@ def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10,
         while current_value <= stop_value:
 
             if not quiet:
+                # This value will only be set if the quiet flag was called
                 index_string = "{}[index = {}]:{} ".format(Fore.RED, index, Fore.RESET)
                 print(index_string+"Computing average sorting time for [{}, {}] using {} samples\n".format(min_value,
                                                                                               current_value,
