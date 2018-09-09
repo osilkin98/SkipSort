@@ -107,7 +107,7 @@ def quick_sort_recursive(x):
 
 
 # This is an iterative implementation of merge sort
-def mergeSortIterative(a):
+def merge_sort(a):
     current_size = 1
 
     # Outer loop for traversing Each
