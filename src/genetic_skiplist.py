@@ -604,9 +604,9 @@ With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
 
 
 if __name__ == '__main__':
-    create_elements_vs_time_graph(a=0, b=1024, start=300, end=25000,
+    create_elements_vs_time_graph(a=0, b=1024, start=100, end=25000,
                                   sorts=(skip_sort, radix_sort, quick_sort, merge_sort, tim_sort),
-                                  increment=100, trials=50, mode='linear')
+                                  increment=300, trials=50, mode='linear')
 
     # create_elements_vs_time_graph(a=0, b=1000000, start=100, end=1000000, bases=(2, 10),
     #                               increment=1, coefficient=10, trials=1, mode='Geometric')
