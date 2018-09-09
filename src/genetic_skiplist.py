@@ -55,7 +55,7 @@ def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths: list=None, trials=1
     data = []
     base = start
     lengths_length, total_time = len(lengths), 0
-    while base <= stop + increment:
+    while base < stop + increment:
 
         # Basic array
         length_times = [base] + [0] * lengths_length
@@ -100,7 +100,7 @@ def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None, 
     data = []
     base = start
     total_time, lengths_length = 0, len(lengths)
-    while base <= stop + increment:
+    while base < stop + increment:
 
         # Basic array
         length_times = [base] + [0] * lengths_length
@@ -192,13 +192,8 @@ def sort_with_ranged_data(a=-maxsize-1, b=maxsize, base=1.5, trials=100,
     return np.array(data)
 
 
-if __name__ == '__main__':
-    a, b = 0, 2 ** 10
-    n = [500, 750, 1000, 1250, 1500]
-
-    trials = 100
-    start, stop = 8, 12
-    inc = 0.1
+def create_sorting_data_graph(a=0, b=maxsize, n=[1000], trials=100, start=1.4,
+                              stop=2, inc=0.05, fpath=None, quiet=False):
 
     fpath = "{}/data/datafileValues{}-{}Trials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
                                                                                  b, a,
@@ -236,7 +231,9 @@ if __name__ == '__main__':
     sorting_time_data = pd.DataFrame(data=data[:, 1:], index=data[:, 0], columns=["N="+str(i) for i in n])
 
     title = "Time Taken to Sort Data of Variable Probability Bases and Data Length,\n"+\
-            "For "+str(trials)+" Randomized Sets of Values Between "+str(a)+" and "+str(b)
+            "For "+str(trials)+" Randomized Sets of Values Between "+str(a)+" and "+str(b) +\
+            "\nUsing " + str(int((stop-start)/inc)) + " Total Samples (increment=" +\
+            str(round(inc, str(inc)[::-1].find('.'))) + ")"
 
     plt.figure()
 
@@ -246,9 +243,6 @@ if __name__ == '__main__':
     plot.set_ylabel("Time Taken (Secs)")
 
     plt.show()
-
-
-
     '''
     a, b, n = 0, 2 ** 31, 1000
     trials = 100
@@ -270,4 +264,10 @@ if __name__ == '__main__':
 
     plt.show()
 
-    '''
+        '''
+
+if __name__ == '__main__':
+
+    N = list(map(lambda x: 2**x, range(4, 12)))
+
+
