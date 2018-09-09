@@ -1,6 +1,7 @@
-from sorting_algorithms import skipSort
+from sorting_algorithms import skipSort, quickSort, stlSort
 from sys import maxsize
 from timeit import timeit
+import random
 from random import randint
 import numpy as np
 from time import time
@@ -17,6 +18,25 @@ def increment_color(color_code: str):
     return colorama.ansi.CSI + str((int(color_code.rstrip('m').lstrip(colorama.ansi.CSI).rstrip('m')) + 1) % 108) + 'm'
 
 
+# This is for testing any other function since skipsort may have a base specified as well
+def sort_test(sort, N=100, a=0, b=maxsize):
+    """
+
+    :param function sort: Sorting function to run on the data
+    :param int N: Number of elements in dataset to be created
+    :param int | float a: Smallest Possible Value
+    :param int | float b: Large Possible Value
+    :return: Nothing
+    """
+    # If we're dealing with ints
+    if type(a) == int and type(b) == int:
+        # Populate the array
+        data = [randint(a, b) for i in range(N)]
+    else:
+        data = [random.random * (b - a) + a for i in range(N)]
+
+    sort(data)
+
 # This is a wrapper for the standard test function exclusive to skipsort
 def skipsort_test(base=2, N=100, a=0, b=maxsize):
     data = [randint(a, b) for i in range(N)]
@@ -24,6 +44,7 @@ def skipsort_test(base=2, N=100, a=0, b=maxsize):
     data.clear()
 
 
+# To be used with multithreading
 def sort_and_add(times_list: list, index, base, n, a, b, trials, quiet=False):
 
     if not quiet:
@@ -242,7 +263,11 @@ def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10,
 
     from math import fabs
 
-    data = [0] * int((stop_value - start_value)/num_elements)
+    list_length = int((stop_value - start_value)/increment) + 1  # +1 because we're doing <= for the while loop
+
+    data = [0] * list_length
+
+    print("List length: {}".format(list_length))
 
     # Swap these if necessary
     if start_value > stop_value:
@@ -264,12 +289,13 @@ def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10,
         while current_value <= stop_value:
 
             if not quiet:
-                print("Computing average sorting time for [{}, {}] using {} samples\n".format(min_value,
+                index_string = "{}[index = {}]:{} ".format(Fore.RED, index, Fore.RESET)
+                print(index_string+"Computing average sorting time for [{}, {}] using {} samples\n".format(min_value,
                                                                                               current_value,
                                                                                               trials))
 
             # Compute the average sorting time with M trials
-            sorting_time = timeit(stmt="skipsort_test(base={}, N={}. a={}, b={}".format(probability_base,
+            sorting_time = timeit(stmt="skipsort_test(base={}, N={}, a={}, b={})".format(probability_base,
                                                                                         num_elements, min_value,
                                                                                         current_value),
                                   number=trials, setup="from __main__ import skipsort_test")
@@ -281,14 +307,14 @@ def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10,
             data[index] = [sparsity, sorting_time]
 
             if not quiet:
-                print("Time to sort {}N={}{} values randomly generated \
+                print(index_string+"Time to sort N={}{}{} values randomly generated \
 between {}{}{} and {}{}{}: {}{:.3f}{} secs\n".format(
                     Fore.CYAN, num_elements, Fore.RESET,
                     Fore.LIGHTRED_EX, min_value, Fore.RESET,
                     Fore.LIGHTGREEN_EX, current_value, Fore.RESET,
                     Fore.CYAN, sorting_time, Fore.RESET
                 ))
-                print("Sparsity: {}{}{} Possibilities/N\n".format(Fore.LIGHTGREEN_EX if sparsity <= 1 else
+                print(index_string+"Sparsity: {}{}{} Possibilities/N\n".format(Fore.LIGHTGREEN_EX if sparsity <= 1 else
                                                                   Fore.LIGHTRED_EX, sparsity, Fore.RESET))
 
             # increment the values
@@ -422,6 +448,4 @@ As The Value Range Increases From {} to {}".format(num_elements, trials, (start-
 
 
 if __name__ == '__main__':
-
-    N = list(map(lambda x: 250*x, range(2, 7)))
-    create_sorting_data_graph(a=0, b=99999, n=N, trials=300, start=1.25, stop=2, inc=0.01)
+    create_sparsity_vs_time_graph(minimum=0, start=100, end=5000, increment=10, trials=10, num_elements=500)
