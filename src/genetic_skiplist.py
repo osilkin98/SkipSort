@@ -20,14 +20,21 @@ def skipsort_test(base=2, N=100, a=0, b=maxsize):
 
 def sort_and_add(times_list: list, index, base, n, a, b, trials):
 
-    print("Running " + str(trials) + " trials for skipsort with a probability base of Pb = " + str(base) +
-          ", on a dataset of N=" + str(n) + "\nwith randomized datasets generated between a = " +
-          str(a) + " and b = " + str(b))
+    print("{}Trials{} = {}\n{}Pb{} = {}\n{}N{} = {}\n{}Interval{} = [{}{}{}, {}{}{}]\n\n".format(
+        Fore.CYAN, Fore.RESET, trials,             # For the trials
+        Fore.LIGHTMAGENTA_EX, Fore.RESET, base,    # For the Probability Base
+        Fore.BLUE, Fore.RESET, n,                  # For the Total Count
+        Fore.LIGHTBLUE_EX, Fore.RESET,             # For the interval display
+        Fore.GREEN, a, Fore.RESET,                 # For the lower bound
+        Fore.RED, b, Fore.RESET))                  # For the upper bound
 
     times_list[index] = timeit(stmt="skipsort_test(base={}, N={}, a={}, b={})".format(base, n, a, b),
                                number=trials, setup="from __main__ import skipsort_test")
 
-    print("{}[SORTING DONE]{}Time taken: " + str(times_list[index]) + " secs\n")
+    print("{}[SORTING DONE]{} Time taken for Thread {}: {}{:.5f}{} secs".format(Fore.RED, Fore.RESET,
+                                                                                index-1, Fore.GREEN,
+                                                                                times_list[index],
+                                                                                Fore.RESET))
 
 
 def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None,
@@ -35,6 +42,7 @@ def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None,
 
     data = []
     base = start
+    total_time = 0
     while base <= stop + increment:
 
         # Basic array
@@ -54,20 +62,25 @@ def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None,
                                                  'b': b,
                                                  'trials': trials})
 
-            print("{}Starting Thread{} for {}N={}{}".format(Fore.LIGHTGREEN_EX, Fore.RESET, Fore.CYAN, n, Fore.RESET))
+            print("{}Starting Thread{} for N={}{}{}\n".format(Fore.LIGHTGREEN_EX, Fore.RESET, Fore.CYAN, n, Fore.RESET))
 
             my_thread.start()
             print(Fore.GREEN+"Thread " + str(i) + " for " + str(n) + " started" + Fore.RESET)
             threads.append(my_thread)
 
-        print("\nRunning join for all threads\n")
+        print(Fore.RED+"\nRunning join for all threads\n"+Fore.RESET)
 
         for i in range(len(threads) - 1, -1, -1):
             print("Waiting for {}Thread {}{}".format(Fore.YELLOW, i, Fore.RESET))
             threads[i].join()
 
+        # Compute the amount of time taken for all the threads to get sorted
         t = time() - t
 
+        # Add it up to the total amount of time
+        total_time += t
+
+        # Print it to stdout
         print("{}Time taken in total: {:.5f}{} secs".format(Fore.GREEN, t, Fore.RESET))
 
         '''
@@ -79,6 +92,8 @@ def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None,
         data.append(length_times)
 
         base += increment
+
+    print("{}TOTAL TIME TAKEN:{} {:.5f}secs".format(Fore.LIGHTRED_EX, Fore.RESET, total_time))
 
     return np.array(data)
 
@@ -111,8 +126,8 @@ if __name__ == '__main__':
     n = [500, 750, 1000, 1250, 1500]
 
     trials = 100
-    start, stop = 1.35, 1.4
-    inc = 0.01
+    start, stop = 1, 4
+    inc = 0.1
 
     fpath = "{}/data/datafileTrials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
                                                                            trials,
@@ -124,7 +139,8 @@ if __name__ == '__main__':
         data = np.loadtxt(fpath)
 
     else:
-        data = sort_with_ranged_bases(a=a, b=b, lengths=n, trials=trials, start=start, stop=stop, increment=inc)
+        data = sort_with_ranged_bases_multithreaded(a=a, b=b, lengths=n,
+                                                    trials=trials, start=start, stop=stop, increment=inc)
 
     # If the filepath doesn't exist
     if not os.path.exists("{}/data".format(os.getcwd())):
@@ -147,7 +163,7 @@ if __name__ == '__main__':
     sorting_time_data = pd.DataFrame(data=data[:, 1:], index=data[:, 0], columns=["N="+str(i) for i in n])
 
     title = "Time Taken to Sort Data of Variable Probability Bases and Data Length,\n"+\
-            "Running "+str(trials)+" Trials, and Generating Values on ["+str(a)+", "+str(b)+"]"
+            "For "+str(trials)+" Randomized Sets of Values Between "+str(a)+" and "+str(b) + "(multithreaded)"
 
     plt.figure()
 
