@@ -38,8 +38,17 @@ def sort_test(sort, N=100, a=0, b=maxsize):
 
     sort(data)
 
+
 # This is a wrapper for the standard test function exclusive to skipsort
 def skipsort_test(base=2, N=100, a=0, b=maxsize):
+    """ Tests Skipsort once with the given parameters
+
+    :param float base: Probability Base
+    :param int N: Number of elements to sort
+    :param int | float a: Smallest possible value
+    :param int | float b: Largest possible value
+    :return: Nothing
+    """
     data = [randint(a, b) for i in range(N)]
     skipSort(data, base)
     data.clear()
@@ -191,8 +200,21 @@ def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None, 
     return np.array(data)
 
 
-def elements_vs_time(a=-maxsize-1, b=maxsize, base=1.5, trials=100,
+def elements_vs_time(a=-maxsize-1, b=maxsize, base=2, trials=100, sorts=(skipSort, quickSort, stlSort),
                           start=0, stop=1000, increment=10, type='linear'):
+    """
+
+    :param int | float a: Maximum Value
+    :param int | float b: Minimum Value
+    :param float base: Probability Base for Skipsort
+    :param int trials: Number of Trials for each data member
+    :param list | tuple sorts: List of Sorting function that have the format `sort(data)`
+    :param int start: First N to Start with
+    :param int stop: Last N to Finish with
+    :param str increment:
+    :param type:
+    :return:
+    """
 
     data = []
     n = start if start > 0 else start + increment
@@ -214,7 +236,7 @@ def elements_vs_time(a=-maxsize-1, b=maxsize, base=1.5, trials=100,
     return np.array(data)
 
 
-def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10, num_elements=500,
+def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10, num_elements=500, sorts=None,
                      trials=100, probability_base=2, fpath=None, quiet=False, overwrite=True, multithread=False):
     """ This function plots the Sparsity of the sorted dataset against the time it took to sort it.
 
@@ -284,7 +306,6 @@ def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10,
         start_value = tmp
 
     if not multithread:
-
 
         current_value = start_value
         index, sparsity = 0, 0
