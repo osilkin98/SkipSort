@@ -256,6 +256,62 @@ between {}{}{} and {}{}{} using {}{}{}: {}{:.3f}{} secs\n".format(
     return np.array(data)
 
 
+def elements_vs_time_bases(a=-maxsize-1, b=maxsize, bases=(2, 4, 6, 8, 10, 20), trials=100, start=10,
+                           stop=1000, increment=10, coefficient=5, type='linear', quiet=False):
+    """ Measures the time it takes for the given sorting algorithms to sort data as N increases.
+    Returns a 2-D numpy array in the form: [[N, time1, ... ]_1, [N, time1, ... ]_2, ..., [N, time1, ...]_n]
+
+    :param int | float a: Maximum Value
+    :param int | float b: Minimum Value
+    :param float base: Probability Base for Skipsort
+    :param int trials: Number of Trials for each data member
+    :param list | tuple sorts: List of Sorting function that have the format `sort(data)`
+    :param int start: First N to Start with
+    :param int stop: Last N to Finish with
+    :param int increment: Increment to Increase by
+    :param str type: Method of incrementing, either linear or geometric, however linear works better.
+    :return: 2-D Numpy Array in the form [ [N, time1, time2, ...]_1, ... [N, time1, time2, ...]_n ]
+    :rtype: numpy.ndarray
+    """
+
+    data = []
+    num_bases, index = len(bases), 0
+    n = start if start > 0 else start + increment
+    a_1 = increment
+    while n <= stop:
+
+        if not quiet:
+            # This value will only be set if the quiet flag was called
+            index_string = "{}[index = {}]:{} ".format(Fore.RED, index, Fore.RESET)
+            print(index_string + "Computing average sorting time for N={}{}{} using {}{}{} samples\n".format(
+                Fore.CYAN, n, Fore.RESET, Fore.BLUE, trials, Fore.RESET))
+
+        sorting_times = [n] + [0] * num_bases
+
+        for i, base in enumerate(bases):
+            sorting_time = timeit(
+                stmt="skipsort_test(base={}, N={}, a={}, b={})".format(base, n, a, b), number=trials,
+                setup="from __main__ import skipsort_test")
+
+            # time taken to sort data with number of elements N
+            sorting_times[i+1] = sorting_time
+            if not quiet:
+                print("\tTime to sort N={}{}{} randomly generated values \
+between {}{}{} and {}{}{} using Base = {}{}{}: {}{:.3f}{} secs\n".format(
+                    Fore.CYAN, n, Fore.RESET,
+                    Fore.LIGHTRED_EX, a, Fore.RESET,
+                    Fore.LIGHTGREEN_EX, b, Fore.RESET,
+                    Fore.LIGHTMAGENTA_EX, base, Fore.RESET,
+                    Fore.CYAN, sorting_time, Fore.RESET))
+
+        data.append(sorting_times)
+
+        n = index * increment if type.lower() == 'linear' else int(a_1 * (coefficient ** index))
+        index += 1
+
+    return np.array(data)
+
+
 def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10, num_elements=500, sorts=None,
                      trials=100, quiet=False, overwrite=True, multithread=False):
     """ This function plots the Sparsity of the sorted dataset against the time it took to sort it.
@@ -503,6 +559,37 @@ def create_elements_vs_time_graph(a=0, b=256, start=10, end=5000, increment=5, c
     np.savetxt(fname=fpath, X=data)
 
     time_over_n = pd.DataFrame(data=data[:, 1:], index=data[:, 0], columns=list(map(lambda x: x.__name__, sorts)))
+
+    plot = time_over_n.plot(title="Time Taken to Sort An Array as N Increases from {} to {}\n\
+With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
+
+    plot.set_xlabel("Number of Elements (N)")
+    plot.set_ylabel("Time (secs)")
+
+    # Save the figure as to avoid overwriting other plots
+    plt.savefig("{}/plots/plot{}.png".format(os.getcwd(), len(os.listdir(os.getcwd() + "/plots"))))
+
+    plt.show()
+
+
+def create_elements_vs_time_graph(a=0, b=256, start=10, end=5000, increment=5, coefficient=5, trials=10,
+                                  bases=(2, 4, 10, 20), fpath=None, mode='linear'):
+
+    fpath = fpath if fpath is not None else\
+        "{}/data/TimeOverElements{}-{}_i{}a{}{}.txt".format(os.getcwd(), end, start, increment,
+                                                            str(coefficient).replace('.', ''), mode)
+
+    if os.path.exists(fpath):
+        data = np.loadtxt(fpath)
+
+    else:
+        data = elements_vs_time_bases(a=a, b=b, start=start, stop=end, increment=increment,
+                                      trials=trials, bases=bases, type=mode, coefficient=coefficient)
+
+    # Try to save the data as a text file
+    np.savetxt(fname=fpath, X=data)
+
+    time_over_n = pd.DataFrame(data=data[:, 1:], index=data[:, 0], columns=bases)
 
     plot = time_over_n.plot(title="Time Taken to Sort An Array as N Increases from {} to {}\n\
 With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
