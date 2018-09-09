@@ -201,7 +201,7 @@ def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None, 
 
 
 def elements_vs_time(a=-maxsize-1, b=maxsize, base=2, trials=100, sorts=(skipSort, quickSort, stlSort),
-                          start=10, stop=1000, increment=10, type='linear', quiet=False):
+                          start=10, stop=1000, increment=10, coefficient=5, type='linear', quiet=False):
     """ Measures the time it takes for the given sorting algorithms to sort data as N increases.
     Returns a 2-D numpy array in the form: [[N, time1, ... ]_1, [N, time1, ... ]_2, ..., [N, time1, ...]_n]
 
@@ -221,6 +221,7 @@ def elements_vs_time(a=-maxsize-1, b=maxsize, base=2, trials=100, sorts=(skipSor
     data = []
     num_sorts, index = len(sorts), 0
     n = start if start > 0 else start + increment
+    a_1 = increment
     while n <= stop:
 
         if not quiet:
@@ -249,7 +250,7 @@ between {}{}{} and {}{}{} using {}{}{}: {}{:.3f}{} secs\n".format(
 
         data.append(sorting_times)
 
-        n = n + increment if type.lower() == 'linear' else n * increment
+        n = index * increment if type.lower() == 'linear' else int(a_1 * (coefficient ** index))
         index += 1
 
     return np.array(data)
