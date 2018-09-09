@@ -206,9 +206,16 @@ def create_sorting_data_graph(a=0, b=maxsize, n=[1000], trials=100, start=1.4,
         data = np.loadtxt(fpath)
 
     else:
-        data = sort_with_ranged_bases(a=a, b=b, lengths=n, trials=trials,
-                                      start=start, stop=stop, increment=inc)
+        if trials < 100:
+            if not quiet:
+                print("Trials ({}) > 100, enabling multithreading".format(trials))
 
+            data = sort_with_ranged_bases(a=a, b=b, lengths=n, trials=trials,
+                                          start=start, stop=stop, increment=inc, quiet=quiet)
+        else:
+
+            data = sort_with_ranged_bases_multithreaded(a=a, b=b, lengths=n, trials=trials,
+                                                        start=start, stop=stop, increment=inc, quiet=quiet)
     # If the filepath doesn't exist
     if not os.path.exists("{}/data".format(os.getcwd())):
         # Make the directories
@@ -242,7 +249,14 @@ def create_sorting_data_graph(a=0, b=maxsize, n=[1000], trials=100, start=1.4,
     plot.set_xlabel("Probability Bases (Pb)")
     plot.set_ylabel("Time Taken (Secs)")
 
+    # Display the plot objects
     plt.show()
+
+    figure = plot[0].get_figure()
+
+    # Save the figure as to avoid overwriting other plots
+    figure.savefig("{}/plots/plot{}".format(os.getcwd(), len(os.listdir(os.getcwd() + "/plots"))))
+
     '''
     a, b, n = 0, 2 ** 31, 1000
     trials = 100
@@ -266,8 +280,9 @@ def create_sorting_data_graph(a=0, b=maxsize, n=[1000], trials=100, start=1.4,
 
         '''
 
+
+
 if __name__ == '__main__':
 
-    N = list(map(lambda x: 2**x, range(4, 12)))
-
-
+    N = list(map(lambda x: 250*x, range(2, 7)))
+    create_sorting_data_graph(a=0, b=99999, n=N, trials=100, start=1, stop=1.5, inc=0.01)
