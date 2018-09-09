@@ -295,13 +295,13 @@ def create_sorting_data_graph(a=0, b=maxsize, n: list=[1000], trials=100, start=
     plot.set_xlabel("Probability Bases (Pb)")
     plot.set_ylabel("Time Taken (Secs)")
 
+    # Save the figure as to avoid overwriting other plots
+    plt.savefig("{}/plots/plot{}.png".format(os.getcwd(), len(os.listdir(os.getcwd() + "/plots"))))
+
+
     # Display the plot objects
     plt.show()
 
-    figure = plot[0].get_figure()
-
-    # Save the figure as to avoid overwriting other plots
-    figure.savefig("{}/plots/plot{}".format(os.getcwd(), len(os.listdir(os.getcwd() + "/plots"))))
 
     '''
     a, b, n = 0, 2 ** 31, 1000
