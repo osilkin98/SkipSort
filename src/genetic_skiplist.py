@@ -192,6 +192,47 @@ def sort_with_ranged_data(a=-maxsize-1, b=maxsize, base=1.5, trials=100,
     return np.array(data)
 
 
+def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10, num_elements=500,
+                     mode='linear', trials=100, fpath=None, quiet=False, multithread=False):
+    """ This function plots the Sparsity of the sorted dataset against the time it took to sort it.
+    The available modes for iteration are 'linear' and 'geometric'. Linear will just increase by a constant
+    value each time, whereas Geometric will multiply the variable by the incremental value, growing exponentially.
+
+        The Sparsity of a dataset is defined as the range of possible values over the size of the dataset, or
+    `S = |B - A|/N`, where `B` and `A` are the highest and lowest values in the dataset, respectively, and `N`
+    is the total number of values in the dataset.
+
+        When `S < 1`, the runtime of the skipsort algorithm is `O(n)`, since there are more spaces for values than
+    there are possible values, the Skiplist would be filled up completely, and so the number of steps it would take
+    to access a value would at most be `O(M)`, where `M = log(|B - A|)`, which is how many bits it takes to represent
+    the biggest value in the range, assuming the Probability Base is 2.
+
+        If `S > 1`, then the number of possible values in the set is greater than the maximum number it can hold,
+    meaning that it's possible that the entire time you might be having to insert a number in the worst case scenario,
+    causing the runtime to be `O(n log n)`. In reality, this is probably not going to be the case, however it will
+    definitely become harder to come across duplicates.
+
+        The more sparse a dataset is, the worse this algorithm will perform. If the sparsity is low, since it will just
+    be a constant insertion/lookup operation for each n, whereas a dense dataset will cause the space usage to
+    become constant.
+
+    :param int | float min_value: The Minumum Value for the Dataset
+    :param int | float start_value: The Value from which we will start generating datasets from
+    :param int | float stop_value: The Highest Value we will go to before halting data creation
+    :param int | float increment: How Much we will increase by value each iteration. This is the variable in this case.
+    :param int num_elements: Total number of elements to use for our dataset. This number stays constant
+    :param str mode: Mode to be used for incrementing the variable. If `linear` is selected, variable increases by
+     `x = x + increment`. If `geometric` is selected, variable increases as `x = increment^i`, where `i` is the
+     index associated with the current iteration. `linear` is selected by default.
+    :param int trials: Number of trials to average a single datapoint over, default is 100.
+    :param str fpath: File Path of where the data file should be saved to
+    :param bool quiet: Flag to indicate whether or not to suppress logging messages. Off by default.
+    :return: 2-D Numpy Array, of the form [[sparsity, time]_1, ... , [sparsity, time]_N].
+    :rtype: numpy.ndarray
+    """
+
+
+
 def create_sorting_data_graph(a=0, b=maxsize, n: list=[1000], trials=100, start=1.4,
                               stop=2.0, inc=0.05, fpath=None, quiet=False):
 
@@ -248,7 +289,6 @@ def create_sorting_data_graph(a=0, b=maxsize, n: list=[1000], trials=100, start=
             "\nUsing " + str(int((stop-start)/inc)*trials) + " Total Samples (increment=" +\
             str(round(inc, str(inc)[::-1].find('.'))) + ", trials/sample=" + str(trials)+ ")"
 
-    plt.figure()
 
     plot = sorting_time_data.plot(title=title)
 
