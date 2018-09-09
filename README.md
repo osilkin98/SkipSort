@@ -338,6 +338,12 @@ since `k` is a constant, this is technically `O(1)`.
 
 
 
+![alt text](src/plots/plot26.png "TAKE THAT QUICKSORT")
+
+The algorithm manages to outperform Quicksort, Radix Sort, and Merge Sort.
+Timsort remains undefeated, however the fact that I finally beat QuickSort 
+is enough to let me get enough sleep at night.
+
 ## Where do we go From Here?
 There is still room for further optimization and fine-tuning to this algorithm, namely in the 
 searching and inserting space. I've considered using a trie data-structure to reduce it down to 
