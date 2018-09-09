@@ -245,16 +245,94 @@ refuse to let QuickSort kick me down. The solution to this predicament, is to ma
 nodes to the nodes themselves using a Hash Table. 
 
 If we look at the previous diagram, a hash table would play very nicely.
+For the sake of simplicity, I've omitted some entries.
+```
 
 
-This creates a very nice solution, where instead of having to perform the same amount of steps to look up a value
-as the number of bits needed to represent it, we can simply perform an `O(1)` operation to retrieve the node,
-no matter how much bits are needed to represent it. 
+    Towers
+    ______
+          
+      2 ---------------------------------> 3 ---------------------------------   -------> ∞
+                                           |                     
+      1 -------------------- > 2 --------> 3 --------------------> 5 -------- ----------> ∞
+                               |           |                       |       
+      0 ---------> 0 --------> 2 --------> 3 --------> 4 --------> 5 ------- > 7 -------> ∞
+                   ^           ^           ^           ^           ^           ^
+                   |           |           |           |           |           |
+                   |           |           |           |           |           |
+H(x): [⌀, ⌀, ⌀, ⌀, 0, ⌀, ⌀, ⌀, 2, ⌀, ⌀, ⌀, 3, ⌀, ⌀, ⌀, 4, ⌀, ⌀, ⌀, 5, ⌀, ⌀, ⌀, 7, ⌀, ⌀, ⌀]
+
+
+```
+In the figure, the hash table appears to have an idea of indexing, however this couldn't be further from the truth.
+The hash table serves as a pointer to the node with the same key value as it.
+
+This solves the problem of congested lookups which we were having previously, reducing 
+the lookup of existing nodes from `O(log(MaxValue)) = O(m)` to `O(1)`, 
+thus for `n > MaxValue`, `O(n*m)` becomes `O(1)`. 
 
 #### Revised Algorithm
 
+The Algorithm has to fundamentally alter how the Skiplist works. This is 
+something that can be optimized even further, but for the time being,
+the current optimizations will suffice. 
 
+##### Skiplist Search Method
+This is how we would perform searching, clearly a logarithmic operation.
+```python
+# Old search method, tries to find closest value to key
+def search_psuedocode(skiplist, key):
+    # Have to do something similar to binary search
+    # This takes log_b(n) time, where b is the probability base
+    for tower in skiplist.towers:
+        
+        # Searches the towers for the key
+        val = tower.search(key)
+    
+    # val might not even be key, we still had to search entire list
+    return val
 
+```
+This is how to ideally search a skiplist whose `n > ValueRange`:
+```python
+# Improved Search Method
+def search_psuedocode(skiplist, key):
+    
+    # If the node exists
+    if key in skiplist.hash_table:
+    
+        # Returns a reference to the node in the hash table
+        return skiplist.hash_table[key]
+    
+    else:
+        # Otherwise we just return a Null pointer
+        return None
+
+```
+##### SkipList Insertion Method
+Now we can optimize the insertion method like so:
+```python
+# increment the value if found, insert if not
+def insert_psuedocode(skiplist, key):
+    # This will return a pointer to the node if it exists
+    # otherwise it returns a Null pointer
+    node = search_psuedocode(skiplist, key)
+    
+    # We can simply increment since we found it, taking O(1) steps
+    if node != None:
+        node.count += 1
+        
+    
+    else:
+        # Otherwise perform a O(log(ValueRange)) insertion
+        skiplist.insert(key)
+           
+```
+
+This way we can simplify the insertion function to only take `O(log(VR))`
+steps for insertion when necessary, where `VR = ValueRange`. Since we anticipate the array to fill up
+when `n > VR`, the amount of insertion steps is only `O(VR log(VR)) = O(k)`, 
+since `k` is a constant, this is technically `O(1)`.
 
 #### Comparing Skipsort's Runtime to Other Well-Known Algorithms
 
