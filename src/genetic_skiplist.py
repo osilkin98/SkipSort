@@ -14,7 +14,7 @@ from colorama import Fore
 
 # This increments the value of the color given as a code
 def increment_color(color_code: str):
-    return colorama.ansi.CSI + str((int(color_code.rstrip('m').lstrip('\033]').rstrip('m')) + 1) % 108) + 'm'
+    return colorama.ansi.CSI + str((int(color_code.rstrip('m').lstrip(colorama.ansi.CSI).rstrip('m')) + 1) % 108) + 'm'
 
 
 # This is a wrapper for the standard test function exclusive to skipsort
@@ -58,7 +58,7 @@ def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths: list=None, trials=1
         length_times = [base] + [0] * lengths_length
 
         if not quiet:
-            print("{}Testing Base {}{:.3f}".format(Fore.LIGHTRED_EX, Fore.RESET, base))
+            print("{}Testing Base {}{}\n".format(Fore.LIGHTRED_EX, Fore.RESET, str(base).rstrip('0')))
 
             current_color = Fore.LIGHTRED_EX
 
