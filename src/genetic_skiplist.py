@@ -232,9 +232,15 @@ def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10,
     """
 
 
+            current_value += increment
+            index += 1
 
-def create_sorting_data_graph(a=0, b=maxsize, n: list=[1000], trials=100, start=1.4,
+        return np.array(data)
+
+def create_sorting_data_graph(a=0, b=maxsize, n: list=None, trials=100, start=1.4,
                               stop=2.0, inc=0.05, fpath=None, quiet=False):
+
+    n = n if n is not None else [1000]
 
     fpath = fpath if fpath is not None else \
         "{}/data/datafileValues{}-{}Trials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
@@ -258,23 +264,23 @@ def create_sorting_data_graph(a=0, b=maxsize, n: list=[1000], trials=100, start=
 
             data = sort_with_ranged_bases_multithreaded(a=a, b=b, lengths=n, trials=trials,
                                                         start=start, stop=stop, increment=inc, quiet=quiet)
-    # If the filepath doesn't exist
-    if not os.path.exists("{}/data".format(os.getcwd())):
-        # Make the directories
-        os.makedirs("{}/data".format(os.getcwd()))
+        # If the filepath doesn't exist
+        if not os.path.exists("{}/data".format(os.getcwd())):
+            # Make the directories
+            os.makedirs("{}/data".format(os.getcwd()))
 
-    # This is where the plots will be saved
-    if not os.path.exists("{}/plots".format(os.getcwd())):
-        os.makedirs("{}/plots".format(os.getcwd()))
+        # This is where the plots will be saved
+        if not os.path.exists("{}/plots".format(os.getcwd())):
+            os.makedirs("{}/plots".format(os.getcwd()))
 
-    try:
-        # Try to save the data as a text file
-        np.savetxt(fname="{}/data/datafileTrials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
-                                                                           trials,
-                                                                           str(stop).replace('.', ''),
-                                                                           str(start).replace('.', ''),
-                                                                           str(inc).replace('.', '')),
-                   X=data)
+        try:
+            # Try to save the data as a text file
+            np.savetxt(fname="{}/data/datafileTrials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
+                                                                               trials,
+                                                                               str(stop).replace('.', ''),
+                                                                               str(start).replace('.', ''),
+                                                                               str(inc).replace('.', '')),
+                       X=data)
 
     # If it failed to write the data to a text file, print it to stdout
     except Exception as e:
