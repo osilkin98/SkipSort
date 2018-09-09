@@ -296,14 +296,6 @@ def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10,
     :rtype: numpy.ndarray
     """
 
-    fpath = fpath if fpath is not None else \
-        "{}/data/SparsityVsTime_{}-{}_{}.txt".format(os.getcwd(), stop_value, min_value, increment)
-
-
-
-    if os.path.exists(fpath) and not overwrite:
-        return np.loadtxt(fpath)
-
     from math import fabs
 
     list_length = int((stop_value - start_value)/increment) + 1  # +1 because we're doing <= for the while loop
@@ -368,10 +360,6 @@ between {}{}{} and {}{}{} using {}{}{}: {}{:.3f}{} secs\n".format(
             # increment the values
             current_value += increment
             index += 1
-
-        # If the file exists and we wanna overwrite or if it doesn't
-        if not os.path.exists(fpath) or overwrite:
-            np.savetxt(fname=fpath, X=data)
 
         # Return it
         return np.array(data)
