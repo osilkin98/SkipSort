@@ -220,6 +220,10 @@ def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10,
     :param int | float increment: How Much we will increase by value each iteration. This is the variable in this case.
     :param int num_elements: Total number of elements to use for our dataset. This number stays constant
     :param int trials: Number of trials to average a single datapoint over, default is 100.
+    :param float probability_base: Base to use when computing probability. I.E. `1/b^n >= p` where `b`
+     denotes the base. This value is 2 by default, however it can be scaled accordingly. Generally, the base
+     doesn't matter as long as it's greater than 2, however anything below 1.4 is a bad idea and will generally
+     result in diminished performance.
     :param str fpath: File Path of where the data file should be saved to
     :param bool quiet: Flag to indicate whether or not to suppress logging messages. Off by default.
     :return: 2-D Numpy Array, of the form [[sparsity, time]_1, ... , [sparsity, time]_N].
