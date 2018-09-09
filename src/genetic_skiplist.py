@@ -18,38 +18,41 @@ def skipsort_test(base=2, N=100, a=0, b=maxsize):
     data.clear()
 
 
-def sort_and_add(times_list: list, index, base, n, a, b, trials):
+def sort_and_add(times_list: list, index, base, n, a, b, trials, quiet=False):
 
-    print("{}Trials{} = {}\n{}Pb{} = {}\n{}N{} = {}\n{}Interval{} = [{}{}{}, {}{}{}]\n\n".format(
-        Fore.CYAN, Fore.RESET, trials,             # For the trials
-        Fore.LIGHTMAGENTA_EX, Fore.RESET, base,    # For the Probability Base
-        Fore.BLUE, Fore.RESET, n,                  # For the Total Count
-        Fore.LIGHTBLUE_EX, Fore.RESET,             # For the interval display
-        Fore.GREEN, a, Fore.RESET,                 # For the lower bound
-        Fore.RED, b, Fore.RESET))                  # For the upper bound
+    if not quiet:
+        print("{}Trials{} = {}\n{}Pb{} = {}\n{}N{} = {}\n{}Interval{} = [{}{}{}, {}{}{}]\n\n".format(
+            Fore.CYAN, Fore.RESET, trials,             # For the trials
+            Fore.LIGHTMAGENTA_EX, Fore.RESET, base,    # For the Probability Base
+            Fore.BLUE, Fore.RESET, n,                  # For the Total Count
+            Fore.LIGHTBLUE_EX, Fore.RESET,             # For the interval display
+            Fore.GREEN, a, Fore.RESET,                 # For the lower bound
+            Fore.RED, b, Fore.RESET))                  # For the upper bound
 
     times_list[index] = timeit(stmt="skipsort_test(base={}, N={}, a={}, b={})".format(base, n, a, b),
                                number=trials, setup="from __main__ import skipsort_test")
 
-    print("{}[SORTING DONE]{} Time taken for Thread {}: {}{:.5f}{} secs".format(Fore.RED, Fore.RESET,
-                                                                                index-1, Fore.GREEN,
-                                                                                times_list[index],
-                                                                                Fore.RESET))
+    if not quiet:
+        print("{}[SORTING DONE]{} Time taken for Thread {}: {}{:.5f}{} secs".format(Fore.RED, Fore.RESET,
+                                                                                    index-1, Fore.GREEN,
+                                                                                    times_list[index],
+                                                                                    Fore.RESET))
 
 
-
-
-def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths=None, trials=10, start=2.0, stop=8.0, increment=1.0):
+# Single threaded function to test sorting with varied bases
+def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths: list=None, trials=10,
+                           start=2.0, stop=8.0, increment=1.0, quiet=False):
 
     data = []
     base = start
-    total_time = 0
+    lengths_length, total_time = len(lengths), 0
     while base <= stop + increment:
 
         # Basic array
-        length_times = [base]
+        length_times = [base] + [0] * lengths_length
 
-        print("{}Testing Base {}{:.3f}".format(Fore.LIGHTRED_EX, Fore.RESET, base))
+        if not quiet:
+            print("{}Testing Base {}{:.3f}".format(Fore.LIGHTRED_EX, Fore.RESET, base))
 
         for i, n in enumerate(lengths):
             base_time = timeit(stmt="skipsort_test(base={}, N={}, a={}, b={})".format(base, n, a, b), number=trials,
@@ -57,33 +60,35 @@ def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths=None, trials=10, sta
             # Add to list
             length_times[i+1] = base_time
 
-            # Add to total time
-            total_time += base_time
+            if not quiet:
+                # Add to total time
+                total_time += base_time
 
-            print("{}[N={}]{} Time taken: {}{:.5f}{} secs\n".format(Fore.LIGHTRED_EX + (i % len(lengths)),
-                                                                    n, Fore.RESET, Fore.GREEN,
-                                                                    base_time, Fore.RESET))
+                print("{}[N={}]{} Time taken: {}{:.5f}{} secs\n".format(Fore.LIGHTRED_EX + (i % lengths_length),
+                                                                        n, Fore.RESET, Fore.GREEN,
+                                                                        base_time, Fore.RESET))
 
         # x: base, [Y]: times taken to sort data using probability base b with variable data sizes
         data.append(length_times)
 
         base += increment
 
-    print("{}TOTAL TIME TAKEN:{} {:.5f}secs".format(Fore.LIGHTRED_EX, Fore.RESET, total_time))
+    if not quiet:
+        print("{}TOTAL TIME TAKEN:{} {:.5f}secs".format(Fore.LIGHTRED_EX, Fore.RESET, total_time))
 
     return np.array(data)
 
 
-def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None,
-                                         trials=10, start=2.0, stop=8.0, increment=1.0):
+def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None, trials=10,
+                                         start=2.0, stop=8.0, increment=1.0, quiet=False):
 
     data = []
     base = start
-    total_time = 0
+    total_time, lengths_length = 0, len(lengths)
     while base <= stop + increment:
 
         # Basic array
-        length_times = [base] + [0] * len(lengths)
+        length_times = [base] + [0] * lengths_length
 
         t = time()
 
@@ -97,28 +102,37 @@ def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None,
                                                  'n': n,
                                                  'a': a,
                                                  'b': b,
-                                                 'trials': trials})
-
-            print("{}Starting Thread{} for N={}{}{}\n".format(Fore.LIGHTGREEN_EX, Fore.RESET, Fore.CYAN, n, Fore.RESET))
+                                                 'trials': trials,
+                                                 'quiet': quiet})
+            if not quiet:
+                print("{}Starting Thread{} for N={}{}{}\n".format(Fore.LIGHTGREEN_EX, Fore.RESET,
+                                                                  Fore.CYAN, n, Fore.RESET))
 
             my_thread.start()
-            print(Fore.GREEN+"Thread " + str(i) + " for " + str(n) + " started" + Fore.RESET)
+
+            if not quiet:
+                print(Fore.GREEN+"Thread " + str(i) + " for " + str(n) + " started" + Fore.RESET)
+
             threads.append(my_thread)
 
-        print(Fore.RED+"\nRunning join for all threads\n"+Fore.RESET)
+        if not quiet:
+            print(Fore.RED+"\nRunning join for all threads\n"+Fore.RESET)
 
         for i in range(len(threads) - 1, -1, -1):
-            print("Waiting for {}Thread {}{}".format(Fore.YELLOW, i, Fore.RESET))
+            if not quiet:
+                print("Waiting for {}Thread {}{}".format(Fore.YELLOW, i, Fore.RESET))
+
             threads[i].join()
 
-        # Compute the amount of time taken for all the threads to get sorted
-        t = time() - t
+        if not quiet:
+            # Compute the amount of time taken for all the threads to get sorted
+            t = time() - t
 
-        # Add it up to the total amount of time
-        total_time += t
+            # Add it up to the total amount of time
+            total_time += t
 
-        # Print it to stdout
-        print("{}Time taken in total: {:.5f}{} secs".format(Fore.GREEN, t, Fore.RESET))
+            # Print it to stdout
+            print("{}Time taken in total: {:.5f}{} secs".format(Fore.GREEN, t, Fore.RESET))
 
         '''
         for i, n in enumerate(lengths):
@@ -130,7 +144,8 @@ def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None,
 
         base += increment
 
-    print("{}TOTAL TIME TAKEN:{} {:.5f}secs".format(Fore.LIGHTRED_EX, Fore.RESET, total_time))
+    if not quiet:
+        print("{}TOTAL TIME TAKEN:{} {:.5f}secs".format(Fore.LIGHTRED_EX, Fore.RESET, total_time))
 
     return np.array(data)
 
