@@ -146,23 +146,38 @@ you would **AT MOST** require `32` steps for each value, which isn't bad at all.
 steps for `n = 2^32 + 1`, in the average case. Or in the worst case it would require 
 `O(n log n)` which in this case would only be `2^32 * 32 = 137,438,953,472`, in the worst case.
 
-## Trials
-I've only tested it a couple of times with some of the other sorting algorithms and the 
-results are as follows:
-```bash
-Using N=20000 with randomized datasets generated between a = 0 and b = 50
-Skipsort Time: 28.12337798802764secs
-Radix Time: 10.858482840994839secs
-Quick Sort Time: 34.37772156301071secs
-Timsort Time: 3.592856852017576secs
-```
+## Performance
 
-```bash
-Using N=10000 with randomized datasets generated between a = 0 and b = 50
-Skip Time: 12.344698900007643secs
-Quick Sort Time: 10.54023400801816secs
-Standard Time: 1.6852746740041766secs
-```
+### Asymptotic Runtime 
+
+The most suitable way to understand just how an algorithm performs, especially if it's hard to grasp 
+the intuition for it, is to just *graph* it, which is exactly what I did.
+
+In this section, we explore various forms of analysis I performed by using the `timeit` Class from the
+`timeit` built-in module to perform the averaged timings. In order to create the graphs, I used `numpy` to 
+neatly aggregate the data, as well as `pandas` and `matplotlib.pyplot` to display it. 
+
+#### Performance Comparison Against Other Algorithms Using Random Data
+
+The most obvious way to first start benchmarking an algorithm is to have it sort variable lengths of data,
+and timing each one and compounding them on average. In order to have a good sense as to how well it actually 
+works, I had to implement other popular algorithms, known for similar runtimes. 
+
+The algorithms used are as follows:
+- Skip Sort
+- Tim Sort
+- Radix Sort
+- Quick Sort (iterative)
+- ~~Bubble Sort~~ (Takes ~9 minutes to sort `N=100,000`)
+
+Note that I did not include Merge Sort, 
+
+
+
+
+#### Comparing Skipsort's Runtime to Other Well-Known Algorithms
+
+
 
 ## Where do we go From Here?
 There is still room for further optimization and fine-tuning to this algorithm, namely in the 
