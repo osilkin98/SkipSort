@@ -208,12 +208,12 @@ def create_sorting_data_graph(a=0, b=maxsize, n: list=[1000], trials=100, start=
 
     else:
         if trials < 100:
-            if not quiet:
-                print("Trials ({}) > 100, enabling multithreading".format(trials))
 
             data = sort_with_ranged_bases(a=a, b=b, lengths=n, trials=trials,
                                           start=start, stop=stop, increment=inc, quiet=quiet)
         else:
+            if not quiet:
+                print("Trials ({}) > 100, enabling multithreading".format(trials))
 
             data = sort_with_ranged_bases_multithreaded(a=a, b=b, lengths=n, trials=trials,
                                                         start=start, stop=stop, increment=inc, quiet=quiet)
@@ -291,4 +291,4 @@ def create_sorting_data_graph(a=0, b=maxsize, n: list=[1000], trials=100, start=
 if __name__ == '__main__':
 
     N = list(map(lambda x: 250*x, range(2, 7)))
-    create_sorting_data_graph(a=0, b=99999, n=N, trials=100, start=1, stop=1.5, inc=0.01)
+    create_sorting_data_graph(a=0, b=99999, n=N, trials=300, start=1.25, stop=2, inc=0.01)
