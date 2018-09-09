@@ -1,4 +1,4 @@
-from sorting_algorithms import skip_sort, quick_sort_recursive, radixSort, quick_sort, timSort
+from sorting_algorithms import skip_sort, quick_sort_recursive, radix_sort, quick_sort, timSort
 from sys import maxsize
 from timeit import timeit
 import random
@@ -605,7 +605,7 @@ With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
 
 if __name__ == '__main__':
     create_elements_vs_time_graph(a=0, b=1024, start=300, end=25000,
-                                  sorts=(skip_sort, radixSort, quick_sort, timSort),
+                                  sorts=(skip_sort, radix_sort, quick_sort, timSort),
                                   increment=100, trials=50, mode='linear')
 
     # create_elements_vs_time_graph(a=0, b=1000000, start=100, end=1000000, bases=(2, 10),

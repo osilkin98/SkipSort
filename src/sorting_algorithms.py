@@ -174,7 +174,7 @@ def merge(a, l, m, r):
         k += 1
 
 
-def radixSort(alist, base=10):
+def radix_sort(alist, base=10):
     if alist == []:
         return
 
