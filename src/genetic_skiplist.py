@@ -37,6 +37,43 @@ def sort_and_add(times_list: list, index, base, n, a, b, trials):
                                                                                 Fore.RESET))
 
 
+
+
+def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths=None, trials=10, start=2.0, stop=8.0, increment=1.0):
+
+    data = []
+    base = start
+    total_time = 0
+    while base <= stop + increment:
+
+        # Basic array
+        length_times = [base]
+
+        print("{}Testing Base {}{:.3f}".format(Fore.LIGHTRED_EX, Fore.RESET, base))
+
+        for i, n in enumerate(lengths):
+            base_time = timeit(stmt="skipsort_test(base={}, N={}, a={}, b={})".format(base, n, a, b), number=trials,
+                               setup="from __main__ import skipsort_test")
+            # Add to list
+            length_times[i+1] = base_time
+
+            # Add to total time
+            total_time += base_time
+
+            print("{}[N={}]{} Time taken: {}{:.5f}{} secs\n".format(Fore.LIGHTRED_EX + (i % len(lengths)),
+                                                                    n, Fore.RESET, Fore.GREEN,
+                                                                    base_time, Fore.RESET))
+
+        # x: base, [Y]: times taken to sort data using probability base b with variable data sizes
+        data.append(length_times)
+
+        base += increment
+
+    print("{}TOTAL TIME TAKEN:{} {:.5f}secs".format(Fore.LIGHTRED_EX, Fore.RESET, total_time))
+
+    return np.array(data)
+
+
 def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None,
                                          trials=10, start=2.0, stop=8.0, increment=1.0):
 
