@@ -4,7 +4,7 @@ from random import randint
 
 
 # skipsort algorithm implementation in python
-def skipSort(data: list, probability_base=2):
+def skip_sort(data: list, probability_base=2):
     slist = Skiplist(probability_base)
     while len(data) != 0:
         slist.insert(data.pop(0))
@@ -231,7 +231,7 @@ with randomized datasets generated between a = {} and b = {}".format(trials, N, 
 
     import timeit
 
-    skip_time = timeit.timeit("test(skipSort, N={}, a={}, b={})".format(N, a, b),
-                              number=trials, setup="from __main__ import test, skipSort")
+    skip_time = timeit.timeit("test(skip_sort, N={}, a={}, b={})".format(N, a, b),
+                              number=trials, setup="from __main__ import test, skip_sort")
 
     # slist.print()

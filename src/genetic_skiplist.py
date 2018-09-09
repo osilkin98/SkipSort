@@ -1,4 +1,4 @@
-from sorting_algorithms import skipSort, quickSortRecursive, radixSort, quickSortIterative, timSort
+from sorting_algorithms import skip_sort, quickSortRecursive, radixSort, quickSortIterative, timSort
 from sys import maxsize
 from timeit import timeit
 import random
@@ -50,7 +50,7 @@ def skipsort_test(base=2, N=100, a=0, b=maxsize):
     :return: Nothing
     """
     data = [randint(a, b) for i in range(N)]
-    skipSort(data, base)
+    skip_sort(data, base)
     data.clear()
 
 
@@ -200,7 +200,7 @@ def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None, 
     return np.array(data)
 
 
-def elements_vs_time(a=-maxsize-1, b=maxsize, base=2, trials=100, sorts=(skipSort, quickSortRecursive, timSort),
+def elements_vs_time(a=-maxsize-1, b=maxsize, base=2, trials=100, sorts=(skip_sort, quickSortRecursive, timSort),
                      start=10, stop=1000, increment=10, coefficient=5.0, type='linear', quiet=False):
     """ Measures the time it takes for the given sorting algorithms to sort data as N increases.
     Returns a 2-D numpy array in the form: [[N, time1, ... ]_1, [N, time1, ... ]_2, ..., [N, time1, ...]_n]
@@ -519,7 +519,7 @@ def create_sorting_data_graph(a=0, b=maxsize, n: list=None, trials=100, start=1.
 
 
 def create_sparsity_vs_time_graph(minimum=0, start=500, end=1000, increment=5, num_elements=500,
-                                  trials=100, base=2, sorts=(skipSort, quickSortRecursive, timSort)):
+                                  trials=100, base=2, sorts=(skip_sort, quickSortRecursive, timSort)):
 
     # Returns a dataset of [[sparsity, time1, ... ]_1, [sparsity, time1, ... ]_2, ..., [sparsity, time1, ... ]_N]
     data = sparsity_vs_time(min_value=minimum, start_value=start, stop_value=end, sorts=sorts,
@@ -542,7 +542,7 @@ As The Value Range Increases From {} to {}".format(num_elements, trials, (start-
 
 
 def create_elements_vs_time_graph(a=0, b=256, start=10, end=5000, increment=5, coefficient=5.0, trials=10,
-                                  sorts=(skipSort, quickSortIterative, timSort), fpath=None, mode='linear'):
+                                  sorts=(skip_sort, quickSortIterative, timSort), fpath=None, mode='linear'):
 
     fpath = fpath if fpath is not None else\
         "{}/data/TimeOverElements{}-{}_i{}a{}{}.txt".format(os.getcwd(), end, start, increment,
@@ -605,7 +605,7 @@ With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
 
 if __name__ == '__main__':
     create_elements_vs_time_graph(a=0, b=1024, start=300, end=25000,
-                                  sorts=(skipSort, radixSort, quickSortIterative, timSort),
+                                  sorts=(skip_sort, radixSort, quickSortIterative, timSort),
                                   increment=100, trials=50, mode='linear')
 
     # create_elements_vs_time_graph(a=0, b=1000000, start=100, end=1000000, bases=(2, 10),
