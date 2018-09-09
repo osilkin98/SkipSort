@@ -256,7 +256,6 @@ def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10,
         min_value = start_value
         start_value = tmp
 
-
     if not multithread:
 
 
@@ -277,6 +276,7 @@ def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10,
 
             # compute sparsity
             sparsity = fabs(current_value - min_value) / num_elements
+
             # Put it into the array
             data[index] = [sparsity, sorting_time]
 
@@ -291,10 +291,17 @@ between {}{}{} and {}{}{}: {}{:.3f}{} secs\n".format(
                 print("Sparsity: {}{}{} Possibilities/N\n".format(Fore.LIGHTGREEN_EX if sparsity <= 1 else
                                                                   Fore.LIGHTRED_EX, sparsity, Fore.RESET))
 
+            # increment the values
             current_value += increment
             index += 1
 
+        # If the file exists and we wanna overwrite or if it doesn't
+        if not os.path.exists(fpath) or overwrite:
+            np.savetxt(fname=fpath, X=data)
+
+        # Return it
         return np.array(data)
+
 
 def create_sorting_data_graph(a=0, b=maxsize, n: list=None, trials=100, start=1.4,
                               stop=2.0, inc=0.05, fpath=None, quiet=False):
@@ -391,6 +398,27 @@ def create_sorting_data_graph(a=0, b=maxsize, n: list=None, trials=100, start=1.
 
         '''
 
+
+def create_sparsity_vs_time_graph(minimum=0, start=500, end=1000, increment=5, num_elements=500,
+                                  trials=100, base=2):
+
+    # Returns a dataset of [[sparsity, time]_1, [sparsity, time]_2, ..., [sparsity, time]_N]
+    data = sparsity_vs_time(min_value=minimum, start_value=start, stop_value=end,
+                            increment=increment, num_elements=num_elements, trials=trials, probability_base=base)
+
+    # This is to graph the time as sparsity gets larger
+    time_over_sparsity = pd.Series(data=data[:, 1], index=data[:, 0])
+
+    plot = time_over_sparsity.plot(title="Time Taken to SkipSort An Array of N={}, {} Times\n\
+As The Value Range Increases From {} to {}".format(num_elements, trials, (start-minimum), (end-minimum)))
+
+    plot.set_xlabel("Sparsity (range/N)")
+    plot.set_ylabel("Time (secs)")
+
+    # Save the figure as to avoid overwriting other plots
+    plt.savefig("{}/plots/plot{}.png".format(os.getcwd(), len(os.listdir(os.getcwd() + "/plots"))))
+
+    plt.show()
 
 
 if __name__ == '__main__':
