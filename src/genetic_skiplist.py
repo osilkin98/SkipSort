@@ -192,8 +192,8 @@ def sort_with_ranged_data(a=-maxsize-1, b=maxsize, base=1.5, trials=100,
     return np.array(data)
 
 
-def create_sorting_data_graph(a=0, b=maxsize, n=[1000], trials=100, start=1.4,
-                              stop=2, inc=0.05, fpath=None, quiet=False):
+def create_sorting_data_graph(a=0, b=maxsize, n: list=[1000], trials=100, start=1.4,
+                              stop=2.0, inc=0.05, fpath=None, quiet=False):
 
     fpath = fpath if fpath is not None else \
         "{}/data/datafileValues{}-{}Trials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
@@ -245,8 +245,8 @@ def create_sorting_data_graph(a=0, b=maxsize, n=[1000], trials=100, start=1.4,
 
     title = "Time Taken to Sort Data of Variable Probability Bases and Data Length,\n"+\
             "For "+str(trials)+" Randomized Sets of Values Between "+str(a)+" and "+str(b) +\
-            "\nUsing " + str(int((stop-start)/inc)) + " Total Samples (increment=" +\
-            str(round(inc, str(inc)[::-1].find('.'))) + ")"
+            "\nUsing " + str(int((stop-start)/inc)*trials) + " Total Samples (increment=" +\
+            str(round(inc, str(inc)[::-1].find('.'))) + ", trials/sample=" + str(trials)+ ")"
 
     plt.figure()
 
