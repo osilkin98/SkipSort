@@ -106,72 +106,80 @@ def quick_sort_recursive(x):
         return first_part + second_part
 
 
-# This is an iterative implementation of merge sort
-def merge_sort(a):
-    current_size = 1
+def merge(a, left, mid, right):
+    """
+    Merge fuction
+    """
+    # Copy array
+    copy_list = []
+    i, j = left, mid + 1
+    ind = left
 
-    # Outer loop for traversing Each
-    # sub array of current_size
-    while current_size < len(a) - 1:
+    while ind < right + 1:
 
-        left = 0
-        # Inner loop for merge call
-        # in a sub array
-        # Each complete Iteration sorts
-        # the iterating sub array
-        while left < len(a) - 1:
-            # mid index = left index of
-            # sub array + current sub
-            # array size - 1
-            mid = left + current_size - 1
-
-            # (False result,True result)
-            # [Condition] Can use current_size
-            # if 2 * current_size < len(a)-1
-            # else len(a)-1
-            right = ((2 * current_size + left - 1,
-                      len(a) - 1)[2 * current_size
-                                  + left - 1 > len(a) - 1])
-
-            # Merge call for each sub array
-            merge(a, left, mid, right)
-            left = left + current_size * 2
-
-        # Increasing sub array size by
-        # multiple of 2
-        current_size = 2 * current_size
-
-
-# Merge Function
-def merge(a, l, m, r):
-    n1 = m - l + 1
-    n2 = r - m
-    L = [0] * n1
-    R = [0] * n2
-    for i in range(0, n1):
-        L[i] = a[l + i]
-    for i in range(0, n2):
-        R[i] = a[m + i + 1]
-
-    i, j, k = 0, 0, l
-    while i < n1 and j < n2:
-        if L[i] > R[j]:
-            a[k] = R[j]
+        # if left array finish merging, copy from right side
+        if i > mid:
+            copy_list.append(a[j])
+            j += 1
+        # if right array finish merging, copy from left side
+        elif j > right:
+            copy_list.append(a[i])
+            i += 1
+        # Check if right array value is less than left one
+        elif a[j] < a[i]:
+            copy_list.append(a[j])
             j += 1
         else:
-            a[k] = L[i]
+            copy_list.append(a[i])
             i += 1
-        k += 1
+        ind += 1
 
-    while i < n1:
-        a[k] = L[i]
-        i += 1
-        k += 1
+    ind = 0
+    for x in (range(left, right + 1)):
+        a[x] = copy_list[ind]
+        ind += 1
 
-    while j < n2:
-        a[k] = R[j]
-        j += 1
-        k += 1
+# This is an iterative implementation of merge sort
+def merge_sort(list_, left=0, right=None):
+    """
+    Iterative version of the Merge Sort Algorithm
+    """
+    right = len(list_) - 1 if right is None else right
+    factor = 2
+    temp_mid = 0
+    # Main loop to iterate over the array by 2^n.
+    while 1:
+        index = 0
+        left = 0
+        right = len(list_) - (len(list_) % factor) - 1
+        mid = int(factor / 2) - 1
+
+        # Auxiliary array to merge subdivisions
+        while index < right:
+            temp_left = index
+            temp_right = temp_left + factor - 1
+            mid2 = int((temp_right + temp_left) / 2)
+            merge(list_, temp_left, mid2, temp_right)
+            index = (index + factor)
+
+        # Chek if there is something to merge from the remaining
+        # Sub-array created by the factor
+        if len(list_) % factor and temp_mid != 0:
+            # merge sub array to later be merged to the final array
+            merge(list_, right + 1, temp_mid, len(list_) - 1)
+            # Update the pivot
+            mid = right
+        # Increase the factor
+        factor = factor * 2
+        temp_mid = right
+
+        # Final merge, merge subarrays created by the subdivision
+        # of the factor to the main array.
+        if factor > len(list_):
+            mid = right
+            right = len(list_) - 1
+            merge(list_, 0, mid, right)
+            break
 
 
 def radix_sort(alist, base=10):
