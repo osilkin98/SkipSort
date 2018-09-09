@@ -167,9 +167,10 @@ if __name__ == '__main__':
 
     plt.figure()
 
-    plot = sorting_time_data.plot(
-        title=title, x="Probability Bases", y="Seconds"
-    )
+    plot = sorting_time_data.plot(title=title)
+
+    plot.set_xlabel("Probability Bases (Pb)")
+    plot.set_ylabel("Time Taken (Secs)")
 
     plt.show()
 
