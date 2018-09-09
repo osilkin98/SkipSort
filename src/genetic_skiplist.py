@@ -169,7 +169,7 @@ def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None, 
     return np.array(data)
 
 
-def sort_with_ranged_data(a=-maxsize-1, b=maxsize, base=1.5, trials=100,
+def elements_vs_time(a=-maxsize-1, b=maxsize, base=1.5, trials=100,
                           start=0, stop=1000, increment=10, type='linear'):
 
     data = []
