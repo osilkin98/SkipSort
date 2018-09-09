@@ -201,8 +201,9 @@ def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None, 
 
 
 def elements_vs_time(a=-maxsize-1, b=maxsize, base=2, trials=100, sorts=(skipSort, quickSort, stlSort),
-                          start=0, stop=1000, increment=10, type='linear'):
-    """
+                          start=10, stop=1000, increment=10, type='linear', quiet=False):
+    """ Measures the time it takes for the given sorting algorithms to sort data as N increases.
+    Returns a 2-D numpy array in the form: [[N, time1, ... ]_1, [N, time1, ... ]_2, ..., [N, time1, ...]_n]
 
     :param int | float a: Maximum Value
     :param int | float b: Minimum Value
@@ -211,33 +212,51 @@ def elements_vs_time(a=-maxsize-1, b=maxsize, base=2, trials=100, sorts=(skipSor
     :param list | tuple sorts: List of Sorting function that have the format `sort(data)`
     :param int start: First N to Start with
     :param int stop: Last N to Finish with
-    :param str increment:
-    :param type:
-    :return:
+    :param int increment: Increment to Increase by
+    :param str type: Method of incrementing, either linear or geometric, however linear works better.
+    :return: 2-D Numpy Array in the form [ [N, time1, time2, ...]_1, ... [N, time1, time2, ...]_n ]
+    :rtype: numpy.ndarray
     """
 
     data = []
+    num_sorts, index = len(sorts), 0
     n = start if start > 0 else start + increment
     while n <= stop:
-        print("Running "+str(trials)+" trials for skipsort with a probability base of Pb = " +str(base) +
-              ", on a dataset of N=" + str(n) + "\nwith randomized datasets generated between a = "+
-              str(a)+" and b = "+str(b) + ", with " + type + " incrementation")
 
-        num_time = timeit("skipsort_test(base={}, N={}, a={}, b={})".format(base, n, a, b),
-                          number=trials, setup="from __main__ import skipsort_test")
+        if not quiet:
+            # This value will only be set if the quiet flag was called
+            index_string = "{}[index = {}]:{} ".format(Fore.RED, index, Fore.RESET)
+            print(index_string + "Computing average sorting time for N={}{}{} using {}{}{} samples\n".format(
+                Fore.CYAN, n, Fore.RESET, Fore.BLUE, trials, Fore.RESET))
 
-        # x: number of elements, # y: time taken to sort data with number of elements x and probability base Pb
-        data.append([n, num_time])
+        sorting_times = [n] + [0] * num_sorts
 
-        print("Time taken: "+str(num_time)+" secs\n")
+        for i, sort in enumerate(sorts):
+            sorting_time = timeit(
+                stmt="sort_test({}, N={}, a={}, b={})".format(sort.__name__, n,a, b), number=trials,
+                setup="from __main__ import sort_test; from sorting_algorithms import {}".format(sort.__name__))
+
+            # time taken to sort data with number of elements N
+            sorting_times[i+1] = sorting_time
+            if not quiet:
+                print("\tTime to sort N={}{}{} randomly generated values \
+between {}{}{} and {}{}{} using {}{}{}: {}{:.3f}{} secs\n".format(
+                    Fore.CYAN, n, Fore.RESET,
+                    Fore.LIGHTRED_EX, a, Fore.RESET,
+                    Fore.LIGHTGREEN_EX, b, Fore.RESET,
+                    Fore.LIGHTMAGENTA_EX, sort.__name__, Fore.RESET,
+                    Fore.CYAN, sorting_time, Fore.RESET))
+
+        data.append(sorting_times)
 
         n = n + increment if type.lower() == 'linear' else n * increment
+        index += 1
 
     return np.array(data)
 
 
 def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10, num_elements=500, sorts=None,
-                     trials=100, probability_base=2, fpath=None, quiet=False, overwrite=True, multithread=False):
+                     trials=100, quiet=False, overwrite=True, multithread=False):
     """ This function plots the Sparsity of the sorted dataset against the time it took to sort it.
 
         The Sparsity of a dataset is defined as the range of possible values over the size of the dataset, or
