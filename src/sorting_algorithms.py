@@ -216,7 +216,7 @@ def test(sort, N=100, a=0, b=maxsize):
     data.clear()
 
 
-def timSort(data: list):
+def tim_sort(data: list):
     data.sort()
 
 
