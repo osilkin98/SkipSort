@@ -1,4 +1,4 @@
-from sorting_algorithms import skip_sort, quickSortRecursive, radixSort, quick_sort, timSort
+from sorting_algorithms import skip_sort, quick_sort_recursive, radixSort, quick_sort, timSort
 from sys import maxsize
 from timeit import timeit
 import random
@@ -200,7 +200,7 @@ def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None, 
     return np.array(data)
 
 
-def elements_vs_time(a=-maxsize-1, b=maxsize, base=2, trials=100, sorts=(skip_sort, quickSortRecursive, timSort),
+def elements_vs_time(a=-maxsize-1, b=maxsize, base=2, trials=100, sorts=(skip_sort, quick_sort_recursive, timSort),
                      start=10, stop=1000, increment=10, coefficient=5.0, type='linear', quiet=False):
     """ Measures the time it takes for the given sorting algorithms to sort data as N increases.
     Returns a 2-D numpy array in the form: [[N, time1, ... ]_1, [N, time1, ... ]_2, ..., [N, time1, ...]_n]
@@ -519,7 +519,7 @@ def create_sorting_data_graph(a=0, b=maxsize, n: list=None, trials=100, start=1.
 
 
 def create_sparsity_vs_time_graph(minimum=0, start=500, end=1000, increment=5, num_elements=500,
-                                  trials=100, base=2, sorts=(skip_sort, quickSortRecursive, timSort)):
+                                  trials=100, base=2, sorts=(skip_sort, quick_sort_recursive, timSort)):
 
     # Returns a dataset of [[sparsity, time1, ... ]_1, [sparsity, time1, ... ]_2, ..., [sparsity, time1, ... ]_N]
     data = sparsity_vs_time(min_value=minimum, start_value=start, stop_value=end, sorts=sorts,
