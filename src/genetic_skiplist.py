@@ -332,13 +332,13 @@ def create_sorting_data_graph(a=0, b=maxsize, n: list=None, trials=100, start=1.
         if not os.path.exists("{}/plots".format(os.getcwd())):
             os.makedirs("{}/plots".format(os.getcwd()))
 
-        try:
-            # Try to save the data as a text file
-            np.savetxt(fname="{}/data/datafileTrials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
-                                                                               trials,
-                                                                               str(stop).replace('.', ''),
-                                                                               str(start).replace('.', ''),
-                                                                               str(inc).replace('.', '')),
+    try:
+        # Try to save the data as a text file
+        np.savetxt(fname="{}/data/datafileTrials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
+                                                                           trials,
+                                                                           str(stop).replace('.', ''),
+                                                                           str(start).replace('.', ''),
+                                                                           str(inc).replace('.', '')),
                        X=data)
 
     # If it failed to write the data to a text file, print it to stdout
