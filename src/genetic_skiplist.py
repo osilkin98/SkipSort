@@ -60,6 +60,8 @@ def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths: list=None, trials=1
         if not quiet:
             print("{}Testing Base {}{:.3f}".format(Fore.LIGHTRED_EX, Fore.RESET, base))
 
+            current_color = Fore.LIGHTRED_EX
+
         for i, n in enumerate(lengths):
             base_time = timeit(stmt="skipsort_test(base={}, N={}, a={}, b={})".format(base, n, a, b), number=trials,
                                setup="from __main__ import skipsort_test")
@@ -70,7 +72,7 @@ def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths: list=None, trials=1
                 # Add to total time
                 total_time += base_time
 
-                print("{}[N={}]{} Time taken: {}{:.5f}{} secs\n".format(Fore.LIGHTRED_EX + (i % lengths_length),
+                print("{}[N={}]{} Time taken: {}{:.5f}{} secs\n".format(current_color,
                                                                         n, Fore.RESET, Fore.GREEN,
                                                                         base_time, Fore.RESET))
 
