@@ -318,26 +318,31 @@ def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10,
                                                                                               current_value,
                                                                                               trials))
 
-            # Compute the average sorting time with M trials
-            sorting_time = timeit(stmt="skipsort_test(base={}, N={}, a={}, b={})".format(probability_base,
-                                                                                        num_elements, min_value,
-                                                                                        current_value),
-                                  number=trials, setup="from __main__ import skipsort_test")
-
             # compute sparsity
             sparsity = fabs(current_value - min_value) / num_elements
 
-            # Put it into the array
-            data[index] = [sparsity, sorting_time]
+            data[index] = [sparsity] + [0.0] * len(sorts)
+
+            for j, sort in enumerate(sorts):
+                # Compute the average sorting time with M trials
+                sorting_time = timeit(
+                    stmt="sort_test({}, N={}, a={}, b={})".format(sort.__name__,num_elements,
+                                                                  min_value,current_value), number=trials,
+                    setup="from __main__ import sort_test; from sorting_algorithms import {}".format(sort.__name__))
+
+                data[index][j+1] = sorting_time
+
+                if not quiet:
+                    print("\tTime to sort N={}{}{} randomly generated values \
+between {}{}{} and {}{}{} using {}{}{}: {}{:.3f}{} secs\n".format(
+                        Fore.CYAN, num_elements, Fore.RESET,
+                        Fore.LIGHTRED_EX, min_value, Fore.RESET,
+                        Fore.LIGHTGREEN_EX, current_value, Fore.RESET,
+                        Fore.LIGHTMAGENTA_EX, sort.__name__, Fore.RESET,
+                        Fore.CYAN, sorting_time, Fore.RESET))
 
             if not quiet:
-                print(index_string+"Time to sort N={}{}{} values randomly generated \
-between {}{}{} and {}{}{}: {}{:.3f}{} secs\n".format(
-                    Fore.CYAN, num_elements, Fore.RESET,
-                    Fore.LIGHTRED_EX, min_value, Fore.RESET,
-                    Fore.LIGHTGREEN_EX, current_value, Fore.RESET,
-                    Fore.CYAN, sorting_time, Fore.RESET
-                ))
+
                 print(index_string+"Sparsity: {}{}{} Possibilities/N\n".format(Fore.LIGHTGREEN_EX if sparsity <= 1 else
                                                                   Fore.LIGHTRED_EX, sparsity, Fore.RESET))
 
@@ -450,14 +455,15 @@ def create_sorting_data_graph(a=0, b=maxsize, n: list=None, trials=100, start=1.
 
 
 def create_sparsity_vs_time_graph(minimum=0, start=500, end=1000, increment=5, num_elements=500,
-                                  trials=100, base=2):
+                                  trials=100, base=2, sorts=(skipSort, quickSort, stlSort)):
 
-    # Returns a dataset of [[sparsity, time]_1, [sparsity, time]_2, ..., [sparsity, time]_N]
-    data = sparsity_vs_time(min_value=minimum, start_value=start, stop_value=end,
+    # Returns a dataset of [[sparsity, time1, ... ]_1, [sparsity, time1, ... ]_2, ..., [sparsity, time1, ... ]_N]
+    data = sparsity_vs_time(min_value=minimum, start_value=start, stop_value=end, sorts=sorts,
                             increment=increment, num_elements=num_elements, trials=trials, probability_base=base)
 
     # This is to graph the time as sparsity gets larger
-    time_over_sparsity = pd.Series(data=data[:, 1], index=data[:, 0])
+    time_over_sparsity = pd.DataFrame(data=data[:, 1:], index=data[:, 0],
+                                      columns=list(map(lambda x: x.__name__, sorts)))
 
     plot = time_over_sparsity.plot(title="Time Taken to SkipSort An Array of N={}, {} Times\n\
 As The Value Range Increases From {} to {}".format(num_elements, trials, (start-minimum), (end-minimum)))
