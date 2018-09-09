@@ -226,6 +226,8 @@ def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10,
      result in diminished performance.
     :param str fpath: File Path of where the data file should be saved to
     :param bool quiet: Flag to indicate whether or not to suppress logging messages. Off by default.
+    :param bool overwrite: Flag to indicate whether or not we should overwrite previous files. Off by default.
+    :param bool multithread: Flag to indicate whether or not this function should be parallelized
     :return: 2-D Numpy Array, of the form [[sparsity, time]_1, ... , [sparsity, time]_N].
     :rtype: numpy.ndarray
     """
