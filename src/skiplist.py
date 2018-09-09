@@ -57,6 +57,8 @@ class Skiplist(object):
 
         self.total = 0
 
+        self.prehash = dict()
+
     def search(self, key):
         """ Search within the Skiplist for the given key, and return the closest value less than or equal
          to the key which was specified to search for.
@@ -65,11 +67,14 @@ class Skiplist(object):
         :return: Closest value less than or equal to the `key` parameter
         :rtype: int
         """
+        if key in self.prehash:
+            return key
+
         search_node = self.head.next[self.height - 1]
 
         for level in range(self.height - 1, -1, -1):
 
-            while search_node.next[level] is not None and search_node.next[level].value <= key:
+            while search_node.next[level] is not None and search_node.next[level].value < key:
                 search_node = search_node.next[level]
 
         return search_node.value
@@ -109,6 +114,12 @@ class Skiplist(object):
         :returns: Nothing
         :rtype: None
         """
+        if key in self.prehash:
+
+            # Increment the count and return
+            self.prehash[key].count += 1
+            return
+
         random_height = self.chooseHeight(self.probability_base, self.max_tower_height)
 
         current_node = self.head
@@ -122,14 +133,8 @@ class Skiplist(object):
 
             # While the next node in the current node list isn't null and its value is less than or equal to
             # The key that we were given, move current_node to be the next node
-            while current_node.next[level] is not None and current_node.next[level].value <= key:
+            while current_node.next[level] is not None and current_node.next[level].value < key:
                 current_node = current_node.next[level]
-
-            # If this is the key, just increment and return
-            if current_node.value == key:
-                # Increment and return
-                current_node.count += 1
-                return
 
             level -= 1
 
@@ -141,7 +146,7 @@ class Skiplist(object):
         # The one at which we need to insert. However since we're not sure if the value
         # Is already in the skiplist or not, we need to traverse deeper into the list to check whether or
         # not that's the case. We will do so by copying the state of current_node into a new variable
-
+        '''
         lower_search = current_node
 
         # This starts the search below the random height index, since we already know the
@@ -159,6 +164,7 @@ class Skiplist(object):
                 return
 
             level -= 1
+        '''
 
         # At this point if we haven't found the value we're looking for already, we can give up and start inserting
         # We know that the level will be random_height - 2, while current_node is on random_height - 1
@@ -166,6 +172,9 @@ class Skiplist(object):
 
         # instantiate the new node to insert
         new_node = self.SNode(key, random_height)
+
+        # Add the node to the hash table for quicker lookup
+        self.prehash[new_node.value] = new_node
 
         self.height = new_node.height if new_node.height > self.height else self.height
 
