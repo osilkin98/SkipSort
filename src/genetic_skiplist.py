@@ -484,5 +484,37 @@ As The Value Range Increases From {} to {}".format(num_elements, trials, (start-
     plt.show()
 
 
+def create_elements_vs_time_graph(a=0, b=256, start=10, end=5000, increment=5, coefficient=5, trials=10,
+                                  sorts=(skipSort, quickSort, stlSort), fpath=None, mode='linear'):
+
+    fpath = fpath if fpath is not None else\
+        "{}/data/TimeOverElements{}-{}_i{}a{}{}.txt".format(os.getcwd(), end, start, increment,
+                                                            str(coefficient).replace('.', ''), mode)
+
+    if os.path.exists(fpath):
+        data = np.loadtxt(fpath)
+
+    else:
+        data = elements_vs_time(a=a, b=b, start=start, stop=end, increment=increment, trials=trials, sorts=sorts,
+                                type=mode, coefficient=coefficient)
+
+    # Try to save the data as a text file
+    np.savetxt(fname=fpath, X=data)
+
+    time_over_n = pd.DataFrame(data=data[:, 1:], index=data[:, 0], columns=list(map(lambda x: x.__name__, sorts)))
+
+    plot = time_over_n.plot(title="Time Taken to Sort An Array as N Increases from {} to {}\n\
+With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
+
+    plot.set_xlabel("Number of Elements (N)")
+    plot.set_ylabel("Time (secs)")
+
+    # Save the figure as to avoid overwriting other plots
+    plt.savefig("{}/plots/plot{}.png".format(os.getcwd(), len(os.listdir(os.getcwd() + "/plots"))))
+
+    plt.show()
+
+
 if __name__ == '__main__':
-    create_sparsity_vs_time_graph(minimum=0, start=100, end=5000, increment=10, trials=10, num_elements=500)
+    create_elements_vs_time_graph(a=0, b=50, start=100, end=25000,
+                                  increment=250, trials=10, mode='linear')
