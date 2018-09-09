@@ -184,18 +184,19 @@ def sort_with_ranged_data(a=-maxsize-1, b=maxsize, base=1.5, trials=100,
 
 
 if __name__ == '__main__':
-    a, b = 0, 2 ** 31
+    a, b = 0, 2 ** 10
     n = [500, 750, 1000, 1250, 1500]
 
     trials = 100
     start, stop = 1, 4
     inc = 0.1
 
-    fpath = "{}/data/datafileTrials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
-                                                                           trials,
-                                                                           str(stop).replace('.', ''),
-                                                                           str(start).replace('.', ''),
-                                                                           str(inc).replace('.', ''))
+    fpath = "{}/data/datafileValues{}-{}Trials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
+                                                                               b, a,
+                                                                               trials,
+                                                                               str(stop).replace('.', ''),
+                                                                               str(start).replace('.', ''),
+                                                                               str(inc).replace('.', ''))
 
     if os.path.exists(fpath):
         data = np.loadtxt(fpath)
