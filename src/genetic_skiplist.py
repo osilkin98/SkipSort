@@ -232,6 +232,64 @@ def sparsity_vs_time(min_value=0, start_value=50, stop_value=1000, increment=10,
     :rtype: numpy.ndarray
     """
 
+    fpath = fpath if fpath is not None else \
+        "{}/data/SparsityVsTime_{}-{}_{}.txt".format(os.getcwd(), stop_value, min_value, increment)
+
+
+
+    if os.path.exists(fpath) and not overwrite:
+        return np.loadtxt(fpath)
+
+    from math import fabs
+
+    data = [0] * int((stop_value - start_value)/num_elements)
+
+    # Swap these if necessary
+    if start_value > stop_value:
+        tmp = start_value
+        start_value = stop_value
+        stop_value = tmp
+
+    # Swap these, if the previous were also swapped, this should receive them correctly and swap with lower of 2
+    if min_value > start_value:
+        tmp = min_value
+        min_value = start_value
+        start_value = tmp
+
+
+    if not multithread:
+
+
+        current_value = start_value
+        index, sparsity = 0, 0
+        while current_value <= stop_value:
+
+            if not quiet:
+                print("Computing average sorting time for [{}, {}] using {} samples\n".format(min_value,
+                                                                                              current_value,
+                                                                                              trials))
+
+            # Compute the average sorting time with M trials
+            sorting_time = timeit(stmt="skipsort_test(base={}, N={}. a={}, b={}".format(probability_base,
+                                                                                        num_elements, min_value,
+                                                                                        current_value),
+                                  number=trials, setup="from __main__ import skipsort_test")
+
+            # compute sparsity
+            sparsity = fabs(current_value - min_value) / num_elements
+            # Put it into the array
+            data[index] = [sparsity, sorting_time]
+
+            if not quiet:
+                print("Time to sort {}N={}{} values randomly generated \
+between {}{}{} and {}{}{}: {}{:.3f}{} secs\n".format(
+                    Fore.CYAN, num_elements, Fore.RESET,
+                    Fore.LIGHTRED_EX, min_value, Fore.RESET,
+                    Fore.LIGHTGREEN_EX, current_value, Fore.RESET,
+                    Fore.CYAN, sorting_time, Fore.RESET
+                ))
+                print("Sparsity: {}{}{} Possibilities/N\n".format(Fore.LIGHTGREEN_EX if sparsity <= 1 else
+                                                                  Fore.LIGHTRED_EX, sparsity, Fore.RESET))
 
             current_value += increment
             index += 1
