@@ -8,7 +8,13 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import os
 import threading
+import colorama.ansi
 from colorama import Fore
+
+
+# This increments the value of the color given as a code
+def increment_color(color_code: str):
+    return colorama.ansi.CSI + str((int(color_code.rstrip('m').lstrip('\033]').rstrip('m')) + 1) % 108) + 'm'
 
 
 # This is a wrapper for the standard test function exclusive to skipsort
@@ -67,6 +73,8 @@ def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths: list=None, trials=1
                 print("{}[N={}]{} Time taken: {}{:.5f}{} secs\n".format(Fore.LIGHTRED_EX + (i % lengths_length),
                                                                         n, Fore.RESET, Fore.GREEN,
                                                                         base_time, Fore.RESET))
+
+            current_color = increment_color(current_color)
 
         # x: base, [Y]: times taken to sort data using probability base b with variable data sizes
         data.append(length_times)
@@ -191,8 +199,8 @@ if __name__ == '__main__':
         data = np.loadtxt(fpath)
 
     else:
-        data = sort_with_ranged_bases_multithreaded(a=a, b=b, lengths=n,
-                                                    trials=trials, start=start, stop=stop, increment=inc)
+        data = sort_with_ranged_bases(a=a, b=b, lengths=n, trials=trials,
+                                      start=start, stop=stop, increment=inc)
 
     # If the filepath doesn't exist
     if not os.path.exists("{}/data".format(os.getcwd())):
@@ -206,6 +214,7 @@ if __name__ == '__main__':
                                                                            str(start).replace('.', ''),
                                                                            str(inc).replace('.', '')),
                    X=data)
+
     # If it failed to write the data to a text file, print it to stdout
     except Exception as e:
         print(e)
@@ -215,7 +224,7 @@ if __name__ == '__main__':
     sorting_time_data = pd.DataFrame(data=data[:, 1:], index=data[:, 0], columns=["N="+str(i) for i in n])
 
     title = "Time Taken to Sort Data of Variable Probability Bases and Data Length,\n"+\
-            "For "+str(trials)+" Randomized Sets of Values Between "+str(a)+" and "+str(b) + "(multithreaded)"
+            "For "+str(trials)+" Randomized Sets of Values Between "+str(a)+" and "+str(b)
 
     plt.figure()
 
