@@ -49,6 +49,9 @@ def sort_and_add(times_list: list, index, base, n, a, b, trials, quiet=False):
 def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths: list=None, trials=10,
                            start=2.0, stop=8.0, increment=1.0, quiet=False):
 
+    # To know how much decimal places we need to round the value to in the future
+    increment_precision = str(increment)[::-1].find('.')
+
     data = []
     base = start
     lengths_length, total_time = len(lengths), 0
@@ -58,7 +61,7 @@ def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths: list=None, trials=1
         length_times = [base] + [0] * lengths_length
 
         if not quiet:
-            print("{}Testing Base {}{}\n".format(Fore.LIGHTRED_EX, Fore.RESET, str(base).rstrip('0')))
+            print("{}Testing Base {}{}\n".format(Fore.LIGHTRED_EX, Fore.RESET, base))
 
             current_color = Fore.LIGHTRED_EX
 
@@ -81,7 +84,7 @@ def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths: list=None, trials=1
         # x: base, [Y]: times taken to sort data using probability base b with variable data sizes
         data.append(length_times)
 
-        base += increment
+        base = round(base + increment, increment_precision)
 
     if not quiet:
         print("{}TOTAL TIME TAKEN:{} {:.5f}secs".format(Fore.LIGHTRED_EX, Fore.RESET, total_time))
@@ -92,6 +95,8 @@ def sort_with_ranged_bases(a=-maxsize-1, b=maxsize, lengths: list=None, trials=1
 def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None, trials=10,
                                          start=2.0, stop=8.0, increment=1.0, quiet=False):
 
+    increment_precision = str(increment)[::-1].find('.')
+
     data = []
     base = start
     total_time, lengths_length = 0, len(lengths)
@@ -99,6 +104,10 @@ def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None, 
 
         # Basic array
         length_times = [base] + [0] * lengths_length
+
+        if not quiet:
+            print("{}Testing Base {}{}\n".format(Fore.LIGHTRED_EX, Fore.RESET, base))
+
 
         t = time()
 
@@ -152,7 +161,7 @@ def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None, 
         # x: base, [Y]: times taken to sort data using probability base b with variable data sizes
         data.append(length_times)
 
-        base += increment
+        base = round(base + increment, increment_precision)
 
     if not quiet:
         print("{}TOTAL TIME TAKEN:{} {:.5f}secs".format(Fore.LIGHTRED_EX, Fore.RESET, total_time))
@@ -188,11 +197,11 @@ if __name__ == '__main__':
     n = [500, 750, 1000, 1250, 1500]
 
     trials = 100
-    start, stop = 1, 4
+    start, stop = 8, 12
     inc = 0.1
 
     fpath = "{}/data/datafileValues{}-{}Trials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
-                                                                               b, a,
+                                                                                 b, a,
                                                                                trials,
                                                                                str(stop).replace('.', ''),
                                                                                str(start).replace('.', ''),
