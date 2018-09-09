@@ -148,7 +148,7 @@ steps for `n = 2^32 + 1`, in the average case. Or in the worst case it would req
 
 ## Performance
 
-### Asymptotic Runtime 
+### Naive Implementation
 
 The most suitable way to understand just how an algorithm performs, especially if it's hard to grasp 
 the intuition for it, is to just *graph* it, which is exactly what I did.
@@ -157,7 +157,7 @@ In this section, we explore various forms of analysis I performed by using the `
 `timeit` built-in module to perform the averaged timings. In order to create the graphs, I used `numpy` to 
 neatly aggregate the data, as well as `pandas` and `matplotlib.pyplot` to display it. 
 
-#### Performance Comparison Against Other Algorithms Using Random Data
+#### Comparison Against Other Popular Algorithms Using Random Data
 
 The most obvious way to first start benchmarking an algorithm is to have it sort variable lengths of data,
 and timing each one and compounding them on average. In order to have a good sense as to how well it actually 
@@ -165,12 +165,93 @@ works, I had to implement other popular algorithms, known for similar runtimes.
 
 The algorithms used are as follows:
 - Skip Sort
-- Tim Sort
+- TimSort
 - Radix Sort
 - Quick Sort (iterative)
 - ~~Bubble Sort~~ (Takes ~9 minutes to sort `N=100,000`)
+- Merge Sort*
 
-Note that I did not include Merge Sort, 
+*Note that I did not include Merge Sort until a lot later into the code, for no particular reason either.
+
+The Skipsort algorithm doesn't perform well when tested against evenly-distributed randomized data, 
+so to 'shortcut' this limitation, I simply limited the values to a range of `256` possible values, since
+`log_2(256) = 8` implies that It'd have to perform **at most** `8` steps for searching & inserting. 
+
+##### Using Random, Evenly Distributed Data
+
+The First Thing I ran it against was TimSort (Python STL Sort), and the only time SkipSort managed to outperform
+QuickSort was when it'd recurse too far (I was using a basic recursive implementation), and ended up crashing. 
+
+###### N = 5000, Value Range = 256
+![alt text](src/plots/plot4.png "Primitive SkipSort Implementation")
+
+With about any modification, QuickSort would always run slightly faster by about `0.35` seconds on average.
+You might think that since SkipSort should perform better with larger datasets, but this is not the case, and 
+both algorithms just end up slowly growing larger and larger at a very not-constant rate (more on this later),
+as can be seen in the following illustration:
+
+###### N = 20000, Value Range = 256
+![alt text](src/plots/plot5.png "QuickSort continuing to kick my ass")
+
+QuickSort was relentless:
+
+###### N = 60000, Value Range = 256
+![alt text](src/plots/plot13.png "I Will Not Accept Defeat")
+
+At this point I ***knew*** that SkipSort was suffering, but I wasn't about to let QuickSort knock me out so easily
+
+#### Algorithmic Bottleneck
+
+There's a bottle-neck that ends up occurring anyway because the runtime when `n >= log(MaxValue)` is not `O(n)`, 
+but rather `O(n*m)` where `m = log(MaxValue)`. Although `m` turns constant when `n >= m`, it still depends
+on `n` to become so. This creates a situation where we'll have a completely filled up skip-list, however, 
+each time we need to increment a value's counter, we still have to perform `m` steps to get to the value.
+
+If we have a dataset with values limited between `-1 < x < 8` as follows,
+
+`X: {1, 3, 7, 2, 4, 0, 6, 5, 3, 2, 0, 6, 4, 3}`
+
+Our Skiplist would look like the following:
+```python
+'''
+
+Towers
+______
+      
+  3 -----------------------------> 3 ------------------------------------> ∞
+                                   |
+  2 -----------------------------> 3 --------------------> 6 ------------> ∞
+                                   |                       |
+  1 ---------------------> 2 ----> 3 ------------> 5 ----> 6 ------------> ∞
+                           |       |               |       |
+  0 -----> 0 ----> 1 ----> 2 ----> 3 ----> 4 ----> 5 ----> 6 ----> 7 ----> ∞
+      
+'''
+```
+Since `N_X` is just going to be far larger than the maximum, in order to continue
+performing simple lookups, we'd have to start searching from the top each time. 
+Say we wanted to increment `1`, we'd have to go to `3` on `L3`, and then `3` on `L2`,
+then `2` on `L1`, then go to `0` on `L0`, then finally `1`. This is clearly inefficient,
+as we already know by `N > 7-0 => N > 7`, that we *probabilistically* have a completely 
+full skiplist, and thus, we are wasting time searching to see whether or not the value is already
+there.
+
+What we need is a way to quickly locate a direct link to a node within the skiplist, if the
+entry exists. This is where hash tables come in.
+
+#### Taking a Load Off With Hash
+I've had this idea in mind before I even started writing the code, however I've arrived at an impasse, and I
+refuse to let QuickSort kick me down. The solution to this predicament, is to map the values of the Skiplist's
+nodes to the nodes themselves using a Hash Table. 
+
+If we look at the previous diagram, a hash table would play very nicely.
+
+
+This creates a very nice solution, where instead of having to perform the same amount of steps to look up a value
+as the number of bits needed to represent it, we can simply perform an `O(1)` operation to retrieve the node,
+no matter how much bits are needed to represent it. 
+
+#### Revised Algorithm
 
 
 
