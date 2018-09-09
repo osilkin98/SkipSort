@@ -195,12 +195,13 @@ def sort_with_ranged_data(a=-maxsize-1, b=maxsize, base=1.5, trials=100,
 def create_sorting_data_graph(a=0, b=maxsize, n=[1000], trials=100, start=1.4,
                               stop=2, inc=0.05, fpath=None, quiet=False):
 
-    fpath = "{}/data/datafileValues{}-{}Trials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
-                                                                                 b, a,
-                                                                               trials,
-                                                                               str(stop).replace('.', ''),
-                                                                               str(start).replace('.', ''),
-                                                                               str(inc).replace('.', ''))
+    fpath = fpath if fpath is not None else \
+        "{}/data/datafileValues{}-{}Trials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
+                                                                           b, a,
+                                                                           trials,
+                                                                           str(stop).replace('.', ''),
+                                                                           str(start).replace('.', ''),
+                                                                           str(inc).replace('.', ''))
 
     if os.path.exists(fpath):
         data = np.loadtxt(fpath)
@@ -220,6 +221,11 @@ def create_sorting_data_graph(a=0, b=maxsize, n=[1000], trials=100, start=1.4,
     if not os.path.exists("{}/data".format(os.getcwd())):
         # Make the directories
         os.makedirs("{}/data".format(os.getcwd()))
+
+    # This is where the plots will be saved
+    if not os.path.exists("{}/plots".format(os.getcwd())):
+        os.makedirs("{}/plots".format(os.getcwd()))
+
     try:
         # Try to save the data as a text file
         np.savetxt(fname="{}/data/datafileTrials{}Interval{}-{}Inc{}.txt".format(os.getcwd(),
