@@ -649,7 +649,7 @@ def create_elements_vs_time_graph(a=0, b=256, start=10, end=5000, increment=5, c
     numbers_fpath = fpath + '.json' if fpath.find('.txt') == -1 else \
                     fpath.replace('.txt', 'numbers.txt')
 
-    if os.path.exists(fpath):
+    if os.path.exists(fpath) and not overwrite:
         data = np.loadtxt(fpath)
         numbers_frequency = np.loadtxt(numbers_fpath)
 
@@ -680,11 +680,12 @@ With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
 
     plt.show()
 
-    numbers_hist = pd.Series(data=numbers_frequency)
+    numbers_hist = pd.DataFrame(data=numbers_frequency)
 
-    hist_plot = numbers_hist.plot(title="Frequency of Numbers Generated Between {} and {}".format(a, b))
-    hist_plot.set_xlabel("Generated Numbers")
-    hist_plot.set_ylabel("Frequency")
+    plt.figure()
+
+    hist_plot = numbers_hist.hist(bins=50)
+
 
     plt.savefig("{}/plots/plot{}hist.png".format(os.getcwd(), entry_number))
 
