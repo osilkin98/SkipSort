@@ -19,41 +19,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-class TimBreak(Exception): pass
-
-
-class TimWrapper:
-    list = None
-    comparisons = 0
-    limit = 0
-    def __init__(self, n):
-        self.n = n
-
-    def __cmp__(self, other):
-        if TimWrapper.comparisons > TimWrapper.limit:
-            raise TimBreak
-        TimWrapper.comparisons += 1
-
-        return ((self.n > other.n) - (self.n < other.n))
-
-    def __getattr__(self, attr):
-        return getattr(self.n, attr)
-    
-
-def timsort(lst):
-    lst.wrap(TimWrapper)
-    TimWrapper.list = lst
-    prev = [i.n for i in lst]
-    while 1:
-        TimWrapper.comparisons = 0
-        TimWrapper.limit += 1
-        lst.reset()
-        try:
-            lst.sort()
-        except TimBreak:
-            if prev != [i.n for i in lst]:
+def cocktailsort(lst):
+    begin, end = 0, len(lst) - 1
+    finished = False
+    while not finished:
+        finished = True
+        for i in xrange(begin, end):
+            if lst[i] > lst[i + 1]:
+                lst[i], lst[i + 1] = lst[i + 1], lst[i]
                 lst.log()
-                prev = [i.n for i in lst]
-        else:
-            lst.log()
+                finished = False
+        if finished:
             break
+        finished = True
+        end -= 1
+        for i in reversed(xrange(begin, end)):
+            if lst[i] > lst[i + 1]:
+                lst[i], lst[i + 1] = lst[i + 1], lst[i]
+                lst.log()
+                finished = False
+        begin += 1
+

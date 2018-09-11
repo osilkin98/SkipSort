@@ -1,5 +1,4 @@
-"""
-Copyright (c) 2010 Aldo Cortesi
+"""Copyright (c) 2010 Aldo Cortesi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -17,43 +16,27 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-"""
-class TimBreak(Exception): pass
+SOFTWARE."""
+def quicksort(lst, left=0, right=None):
+    if right is None:
+        right = len(lst) - 1
+    l = left
+    r = right
+    if l <= r:
+        mid = lst[(left+right)/2]
+        while l <= r:
+            while l <= right and lst[l] < mid:
+                l += 1
+            while r > left and lst[r] > mid:
+                r -= 1
+            if l <= r:
+                lst[l], lst[r] = lst[r], lst[l]
+                if l != r:
+                    lst.log()
+                l+=1
+                r-=1
+        if left < r:
+            quicksort(lst, left, r)
+        if l < right:
+            quicksort(lst, l, right)
 
-
-class TimWrapper:
-    list = None
-    comparisons = 0
-    limit = 0
-    def __init__(self, n):
-        self.n = n
-
-    def __cmp__(self, other):
-        if TimWrapper.comparisons > TimWrapper.limit:
-            raise TimBreak
-        TimWrapper.comparisons += 1
-
-        return ((self.n > other.n) - (self.n < other.n))
-
-    def __getattr__(self, attr):
-        return getattr(self.n, attr)
-    
-
-def timsort(lst):
-    lst.wrap(TimWrapper)
-    TimWrapper.list = lst
-    prev = [i.n for i in lst]
-    while 1:
-        TimWrapper.comparisons = 0
-        TimWrapper.limit += 1
-        lst.reset()
-        try:
-            lst.sort()
-        except TimBreak:
-            if prev != [i.n for i in lst]:
-                lst.log()
-                prev = [i.n for i in lst]
-        else:
-            lst.log()
-            break

@@ -1,5 +1,4 @@
-"""
-Copyright (c) 2010 Aldo Cortesi
+"""Copyright (c) 2010 Aldo Cortesi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -17,43 +16,37 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-"""
-class TimBreak(Exception): pass
+SOFTWARE."""
+
+import math
+ASCENDING = True
+DESCENDING = False
+
+def compare(lst, i, j, dir):
+    if dir == (lst[i] > lst[j]):
+        lst[i], lst[j] = lst[j], lst[i]
+        lst.log()
 
 
-class TimWrapper:
-    list = None
-    comparisons = 0
-    limit = 0
-    def __init__(self, n):
-        self.n = n
+def merge(lst, lo, n, dir):
+    if n > 1: 
+        k = n/2
+        for i in range(lo, lo+k):
+            compare(lst, i, i+k, dir)
+        merge(lst, lo, k, dir)
+        merge(lst, lo+k, k, dir)
 
-    def __cmp__(self, other):
-        if TimWrapper.comparisons > TimWrapper.limit:
-            raise TimBreak
-        TimWrapper.comparisons += 1
 
-        return ((self.n > other.n) - (self.n < other.n))
+def _bitonicsort(lst, lo, n, dir):
+    if n > 1:
+        k = n/2
+        _bitonicsort(lst, lo, k, ASCENDING)
+        _bitonicsort(lst, lo+k, k, DESCENDING)
+        merge(lst, lo, n, dir)
 
-    def __getattr__(self, attr):
-        return getattr(self.n, attr)
-    
 
-def timsort(lst):
-    lst.wrap(TimWrapper)
-    TimWrapper.list = lst
-    prev = [i.n for i in lst]
-    while 1:
-        TimWrapper.comparisons = 0
-        TimWrapper.limit += 1
-        lst.reset()
-        try:
-            lst.sort()
-        except TimBreak:
-            if prev != [i.n for i in lst]:
-                lst.log()
-                prev = [i.n for i in lst]
-        else:
-            lst.log()
-            break
+def bitonicsort(lst):
+    # Length of list must be 2**x, where x is an integer.
+    assert math.modf(math.log(len(lst), 2))[0] == 0
+    _bitonicsort(lst, 0, len(lst), ASCENDING)
+

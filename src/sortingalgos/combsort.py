@@ -19,41 +19,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-class TimBreak(Exception): pass
-
-
-class TimWrapper:
-    list = None
-    comparisons = 0
-    limit = 0
-    def __init__(self, n):
-        self.n = n
-
-    def __cmp__(self, other):
-        if TimWrapper.comparisons > TimWrapper.limit:
-            raise TimBreak
-        TimWrapper.comparisons += 1
-
-        return ((self.n > other.n) - (self.n < other.n))
-
-    def __getattr__(self, attr):
-        return getattr(self.n, attr)
-    
-
-def timsort(lst):
-    lst.wrap(TimWrapper)
-    TimWrapper.list = lst
-    prev = [i.n for i in lst]
+def combsort(lst):
+    gap = len(lst)
+    swaps = False
     while 1:
-        TimWrapper.comparisons = 0
-        TimWrapper.limit += 1
-        lst.reset()
-        try:
-            lst.sort()
-        except TimBreak:
-            if prev != [i.n for i in lst]:
+        gap = int(gap / 1.25)
+        swaps = False
+        for i in range(len(lst) - gap):
+            if lst[i] > lst[i + gap]:
+                lst[i], lst[i + gap] = lst[i + gap], lst[i]
                 lst.log()
-                prev = [i.n for i in lst]
-        else:
-            lst.log()
+                swaps = True
+        if not swaps and gap <= 1:
             break
+

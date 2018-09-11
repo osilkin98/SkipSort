@@ -1,5 +1,4 @@
-"""
-Copyright (c) 2010 Aldo Cortesi
+"""Copyright (c) 2010 Aldo Cortesi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -17,43 +16,20 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-"""
-class TimBreak(Exception): pass
-
-
-class TimWrapper:
-    list = None
-    comparisons = 0
-    limit = 0
-    def __init__(self, n):
-        self.n = n
-
-    def __cmp__(self, other):
-        if TimWrapper.comparisons > TimWrapper.limit:
-            raise TimBreak
-        TimWrapper.comparisons += 1
-
-        return ((self.n > other.n) - (self.n < other.n))
-
-    def __getattr__(self, attr):
-        return getattr(self.n, attr)
-    
-
-def timsort(lst):
-    lst.wrap(TimWrapper)
-    TimWrapper.list = lst
-    prev = [i.n for i in lst]
-    while 1:
-        TimWrapper.comparisons = 0
-        TimWrapper.limit += 1
-        lst.reset()
-        try:
-            lst.sort()
-        except TimBreak:
-            if prev != [i.n for i in lst]:
-                lst.log()
-                prev = [i.n for i in lst]
-        else:
-            lst.log()
-            break
+SOFTWARE."""
+def mergesort(lst, left=0, right=None):
+    if right is None:
+        right = len(lst) - 1
+    if left >= right:
+        return
+    middle = (left + right) // 2
+    mergesort(lst, left, middle)
+    mergesort(lst, middle + 1, right)
+    i, end_i, j = left, middle, middle + 1
+    while i <= end_i and j <= right:
+        if lst[i] < lst[j]:
+            i += 1
+            continue
+        lst[i], lst[i+1:j+1] = lst[j], lst[i:j]
+        lst.log()
+        i, end_i, j = i + 1, end_i + 1, j + 1

@@ -1,5 +1,4 @@
-"""
-Copyright (c) 2010 Aldo Cortesi
+"""Copyright (c) 2010 Aldo Cortesi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -17,43 +16,25 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-"""
-class TimBreak(Exception): pass
+SOFTWARE."""
+
+def cyclesort(lst):
+    for i in range(len(lst)):
+        if i != lst[i]:
+            n = i
+            while 1: 
+                tmp = lst[int(n)]
+                if n != i:
+                    lst[int(n)] = last_value
+                    lst.log()
+                else:
+                    lst[int(n)] = None
+                    lst.log()
+                last_value = tmp
+                n = last_value
+                if n == i:
+                    lst[int(n)] = last_value
+                    lst.log()
+                    break
 
 
-class TimWrapper:
-    list = None
-    comparisons = 0
-    limit = 0
-    def __init__(self, n):
-        self.n = n
-
-    def __cmp__(self, other):
-        if TimWrapper.comparisons > TimWrapper.limit:
-            raise TimBreak
-        TimWrapper.comparisons += 1
-
-        return ((self.n > other.n) - (self.n < other.n))
-
-    def __getattr__(self, attr):
-        return getattr(self.n, attr)
-    
-
-def timsort(lst):
-    lst.wrap(TimWrapper)
-    TimWrapper.list = lst
-    prev = [i.n for i in lst]
-    while 1:
-        TimWrapper.comparisons = 0
-        TimWrapper.limit += 1
-        lst.reset()
-        try:
-            lst.sort()
-        except TimBreak:
-            if prev != [i.n for i in lst]:
-                lst.log()
-                prev = [i.n for i in lst]
-        else:
-            lst.log()
-            break
