@@ -56,10 +56,10 @@ def create_random_dataset(set_length=100, num_sets=10, random_func=np.random.nor
 def create_random_dataset_standard(a=0, b=maxsize, set_length=100, num_sets=10):
     """
 
-    :param int | float a: Lowest possible value for the Datasets
+    :param int | float a: Lowest possible value for the datasets
     :param int | float b: Highest possible value for the datasets
-    :param set_length: Number of elements within each dataset
-    :param num_sets: Amount of datasets to generate
+    :param int set_length: Number of elements within each dataset
+    :param int num_sets: Amount of datasets to generate
     :return: A List of the datasets as tuples , though these should be copied to avoid having already sorted data.
     :rtype: list
     """
