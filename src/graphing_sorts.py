@@ -251,6 +251,12 @@ def elements_vs_time(a=-maxsize-1, b=maxsize, base=2, trials=100, sorts=(skip_so
 
     # Initialize the arrays for data and the numbers we'll use
     data = []
+
+    # We'll save the numbers we've used in a dictionary so calling them back will be faster
+    # The keys will be the numbers and the values will be the number count
+    numbers_used = {}
+
+    # Save the number of sorts so we don't keep calling len() each time
     num_sorts, index = len(sorts), 0
 
     # We can't start with 0 elements, that just doesn't work
@@ -298,10 +304,22 @@ between {}{}{} and {}{}{} using {}{}{}: {}{:.3f}{} secs\n".format(
         # Add the data
         data.append(sorting_times)
 
-        n += increment if type.lower() == 'linear' else int(a_1 * (coefficient ** index))
+        # Indicate that the numbers have been used already by putting them into the dict
+        for unsorted in unsorted_dataset:
+            for num in unsorted:
+                if num in numbers_used:
+                    numbers_used[num] += 1
+                else:
+                    numbers_used[num] = 1
+
+        n += increment if type.lower() == 'linear' else int(increment * (coefficient ** index))
         index += 1
 
-    return np.array(data)
+    # Transforms the dictionary we made into a 2-D array where the sub-lists are the number frequency pairs
+    # That we kept track of in the numbers_used dict
+    numbers_used_array = [[number, frequency] for number, frequency in numbers_used.items()]
+
+    return np.array(data), np.array(numbers_used_array)
 
 
 def elements_vs_time_bases(a=-maxsize-1, b=maxsize, bases=(2, 4, 6, 8, 10, 20), trials=100, start=10,
