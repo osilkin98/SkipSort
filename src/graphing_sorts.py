@@ -249,10 +249,14 @@ def elements_vs_time(a=-maxsize-1, b=maxsize, base=2, trials=100, sorts=(skip_so
     :rtype: numpy.ndarray
     """
 
+    # Initialize the arrays for data and the numbers we'll use
     data = []
     num_sorts, index = len(sorts), 0
+
+    # We can't start with 0 elements, that just doesn't work
     n = start if start > 0 else start + increment
-    a_1 = increment
+
+    # While n is less than or equal to the maximum number of elements we want to stop at
     while n <= stop:
 
         if not quiet:
@@ -261,11 +265,23 @@ def elements_vs_time(a=-maxsize-1, b=maxsize, base=2, trials=100, sorts=(skip_so
             print(index_string + "Computing average sorting time for N={}{}{} using {}{}{} samples\n".format(
                 Fore.CYAN, n, Fore.RESET, Fore.BLUE, trials, Fore.RESET))
 
+        # Create an empty list with the first element being the number of elements that get sorted
+        # And each index corresponds to the given functions sorting time
         sorting_times = [n] + [0] * num_sorts
 
+        # This is sort of the main dataset that will be used for sorting, the values within
+        # Should be copied into a new list each time, prior to sorting
+        unsorted_dataset = create_random_dataset_standard(a=a, b=b, set_length=n, num_sets=trials)
+
         for i, sort in enumerate(sorts):
+
+            # Creates a copy of the unsorted data, each time the loop runs, this is reset
+            unsorted_dataset_copy = [list(unsorted[:]) for unsorted in unsorted_dataset]
+
+            # The number of trials is reflected in the number of datasets provided in unsorted_dataset
             sorting_time = timeit(
-                stmt="sort_test({}, N={}, a={}, b={})".format(sort.__name__, n,a, b), number=trials,
+                stmt="sort_test_with_data(sort={}, data={})".format(sort.__name__, unsorted_dataset_copy),
+                number=1,
                 setup="from __main__ import sort_test; from sorting_algorithms import {}".format(sort.__name__))
 
             # time taken to sort data with number of elements N
@@ -279,6 +295,7 @@ between {}{}{} and {}{}{} using {}{}{}: {}{:.3f}{} secs\n".format(
                     Fore.LIGHTMAGENTA_EX, sort.__name__, Fore.RESET,
                     Fore.CYAN, sorting_time, Fore.RESET))
 
+        # Add the data
         data.append(sorting_times)
 
         n += increment if type.lower() == 'linear' else int(a_1 * (coefficient ** index))
