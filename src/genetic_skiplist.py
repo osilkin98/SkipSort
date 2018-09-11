@@ -257,19 +257,20 @@ between {}{}{} and {}{}{} using {}{}{}: {}{:.3f}{} secs\n".format(
 
 
 def elements_vs_time_bases(a=-maxsize-1, b=maxsize, bases=(2, 4, 6, 8, 10, 20), trials=100, start=10,
-                           stop=1000, increment=10, coefficient=5, type='linear', quiet=False):
+                           stop=1000, increment=10, ratio=5, mode='linear', quiet=False):
     """ Measures the time it takes for the given sorting algorithms to sort data as N increases.
     Returns a 2-D numpy array in the form: [[N, time1, ... ]_1, [N, time1, ... ]_2, ..., [N, time1, ...]_n]
 
     :param int | float a: Maximum Value
     :param int | float b: Minimum Value
-    :param float base: Probability Base for Skipsort
+    :param list | tuple bases: List of number bases to be used when collecting the data
     :param int trials: Number of Trials for each data member
-    :param list | tuple sorts: List of Sorting function that have the format `sort(data)`
     :param int start: First N to Start with
     :param int stop: Last N to Finish with
+    :param float ratio: Ratio `r` to use in the equation `a_i = a_1 *(r^i) if the incrementation
+     mode is selected as 'geometric'
     :param int increment: Increment to Increase by
-    :param str type: Method of incrementing, either linear or geometric, however linear works better.
+    :param str mode: Method of incrementing, either linear or geometric, however linear works better.
     :return: 2-D Numpy Array in the form [ [N, time1, time2, ...]_1, ... [N, time1, time2, ...]_n ]
     :rtype: numpy.ndarray
     """
@@ -306,7 +307,7 @@ between {}{}{} and {}{}{} using Base = {}{}{}: {}{:.3f}{} secs\n".format(
 
         data.append(sorting_times)
 
-        n = index * increment if type.lower() == 'linear' else int(a_1 * (coefficient ** index))
+        n = index * increment if mode.lower() == 'linear' else int(a_1 * (ratio ** index))
         index += 1
 
     return np.array(data)
@@ -522,7 +523,7 @@ def create_sparsity_vs_time_graph(minimum=0, start=500, end=1000, increment=5, n
 
     # Returns a dataset of [[sparsity, time1, ... ]_1, [sparsity, time1, ... ]_2, ..., [sparsity, time1, ... ]_N]
     data = sparsity_vs_time(min_value=minimum, start_value=start, stop_value=end, sorts=sorts,
-                            increment=increment, num_elements=num_elements, trials=trials, probability_base=base)
+                            increment=increment, num_elements=num_elements, trials=trials)
 
     # This is to graph the time as sparsity gets larger
     time_over_sparsity = pd.DataFrame(data=data[:, 1:], index=data[:, 0],
