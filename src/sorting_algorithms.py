@@ -139,7 +139,7 @@ def merge(a, left, mid, right):
         a[x] = copy_list[ind]
         ind += 1
 
-# This is an iterative implementation of merge sort
+# This is an iterative implementation of timsort_merge sort
 def merge_sort(list_, left=0, right=None):
     """
     Iterative version of the Merge Sort Algorithm
@@ -154,7 +154,7 @@ def merge_sort(list_, left=0, right=None):
         right = len(list_) - (len(list_) % factor) - 1
         mid = int(factor / 2) - 1
 
-        # Auxiliary array to merge subdivisions
+        # Auxiliary array to timsort_merge subdivisions
         while index < right:
             temp_left = index
             temp_right = temp_left + factor - 1
@@ -162,10 +162,10 @@ def merge_sort(list_, left=0, right=None):
             merge(list_, temp_left, mid2, temp_right)
             index = (index + factor)
 
-        # Chek if there is something to merge from the remaining
+        # Chek if there is something to timsort_merge from the remaining
         # Sub-array created by the factor
         if len(list_) % factor and temp_mid != 0:
-            # merge sub array to later be merged to the final array
+            # timsort_merge sub array to later be merged to the final array
             merge(list_, right + 1, temp_mid, len(list_) - 1)
             # Update the pivot
             mid = right
@@ -173,7 +173,7 @@ def merge_sort(list_, left=0, right=None):
         factor = factor * 2
         temp_mid = right
 
-        # Final merge, merge subarrays created by the subdivision
+        # Final timsort_merge, timsort_merge subarrays created by the subdivision
         # of the factor to the main array.
         if factor > len(list_):
             mid = right
@@ -268,7 +268,7 @@ def insertion_sort(the_array):
     return the_array
 
 
-def merge(left, right):
+def timsort_merge(left, right):
     """Takes two sorted lists and returns a single sorted list by comparing the
     elements one at a time.
     [1, 2, 3, 4, 5, 6]
@@ -278,8 +278,8 @@ def merge(left, right):
     if not right:
         return left
     if left[0] < right[0]:
-        return [left[0]] + merge(left[1:], right)
-    return [right[0]] + merge(left, right[1:])
+        return [left[0]] + timsort_merge(left[1:], right)
+    return [right[0]] + timsort_merge(left, right[1:])
 
 
 def timsort(the_array):
@@ -311,12 +311,10 @@ def timsort(the_array):
     for item in runs:
         sorted_runs.append(insertion_sort(item))
 
-    # for every run in sorted_runs, merge them
+    # for every run in sorted_runs, timsort_merge them
     sorted_array = []
     for run in sorted_runs:
-        sorted_array = merge(sorted_array, run)
-
-    print(sorted_array)
+        sorted_array = timsort_merge(sorted_array, run)
 
 
 if __name__ == '__main__':
