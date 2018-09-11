@@ -30,6 +30,29 @@ def sort_test_with_data(sort, data):
         sort(unsorted_list)
 
 
+def create_random_dataset(set_length=100, num_sets=10, random_func=np.random.normal, force_int=True,
+                          **kwargs):
+    """ Creates random datasets provided the information in
+
+    :param int set_length: Number of elements within each dataset:
+    :param int num_sets: Amount of datasets to generate
+    :param function random_func: Random function to use when generating values, Normal Gaussian distribution
+     is used by default.
+    :param kwargs: Parameters to Provide for random function, must specify 'function', as well as its
+     necessary paramters. If none is provided, the standard python library will be used.
+    :return: A List of the datasets as tuples , though these should be copied to avoid having already sorted data.
+    :rtype: list
+    """
+    print("Set length: {}\nN: {}\nFunction: {}\n".format(set_length, num_sets, random_func.__name__))
+    for key, value in kwargs.items():
+        print("{}: {}".format(key, value))
+
+    if force_int:
+        return [tuple([int(random_func(**kwargs)) for num in range(set_length)]) for dataset in range(num_sets)]
+    else:
+        return [tuple([random_func(**kwargs) for num in range(set_length)]) for dataset in range(num_sets)]
+
+
 def create_random_dataset_standard(a=0, b=maxsize, set_length=100, num_sets=10):
     """
 
@@ -238,7 +261,6 @@ def elements_vs_time(a=-maxsize-1, b=maxsize, base=2, trials=100, sorts=(skip_so
 
     :param int | float a: Minimum Possible Value
     :param int | float b: Maximum Possible Value
-    :param float base: Probability Base for Skipsort
     :param int trials: Number of Trials for each data member
     :param list | tuple sorts: List of Sorting function that have the format `sort(data)`
     :param int start: First N to Start with
