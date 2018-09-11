@@ -728,8 +728,8 @@ With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
 
 if __name__ == '__main__':
     random_parameters = {'loc': 50, 'scale': 30}
-    create_elements_vs_time_graph(a=0, b=1024, end=10000, start=500, increment=50, trials=10,
-                                  sorts=(skip_sort, quick_sort, merge_sort, tim_sort_c, radix_sort),
+    create_elements_vs_time_graph(end=2500, start=500, increment=100, trials=10,
+                                  sorts=(skip_sort, quick_sort, merge_sort, tim_sort_c, radix_sort, timsort),
                                   random_func=np.random.normal, **random_parameters)
 
     # create_elements_vs_time_graph(a=0, b=1000000, start=100, end=1000000, bases=(2, 10),
