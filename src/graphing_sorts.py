@@ -236,8 +236,8 @@ def elements_vs_time(a=-maxsize-1, b=maxsize, base=2, trials=100, sorts=(skip_so
     """ Measures the time it takes for the given sorting algorithms to sort data as N increases.
     Returns a 2-D numpy array in the form: [[N, time1, ... ]_1, [N, time1, ... ]_2, ..., [N, time1, ...]_n]
 
-    :param int | float a: Maximum Value
-    :param int | float b: Minimum Value
+    :param int | float a: Minimum Possible Value
+    :param int | float b: Maximum Possible Value
     :param float base: Probability Base for Skipsort
     :param int trials: Number of Trials for each data member
     :param list | tuple sorts: List of Sorting function that have the format `sort(data)`
