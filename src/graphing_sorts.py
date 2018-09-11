@@ -245,8 +245,9 @@ def elements_vs_time(a=-maxsize-1, b=maxsize, base=2, trials=100, sorts=(skip_so
     :param int stop: Last N to Finish with
     :param int increment: Increment to Increase by
     :param str type: Method of incrementing, either linear or geometric, however linear works better.
-    :return: 2-D Numpy Array in the form [ [N, time1, time2, ...]_1, ... [N, time1, time2, ...]_n ]
-    :rtype: numpy.ndarray
+    :return: 2-D Numpy Array in the form [ [N, time1, time2, ...]_1, ... [N, time1, time2, ...]_n ],
+     as well as a 1-D Numpy Array containing all the randomly generated numbers
+    :rtype: numpy.ndarray, numpy.ndarray
     """
 
     # Initialize the arrays for data and the numbers we'll use
@@ -254,7 +255,7 @@ def elements_vs_time(a=-maxsize-1, b=maxsize, base=2, trials=100, sorts=(skip_so
 
     # We'll save the numbers we've used in a dictionary so calling them back will be faster
     # The keys will be the numbers and the values will be the number count
-    numbers_used = {}
+    numbers_used = []
 
     # Save the number of sorts so we don't keep calling len() each time
     num_sorts, index = len(sorts), 0
@@ -288,7 +289,8 @@ def elements_vs_time(a=-maxsize-1, b=maxsize, base=2, trials=100, sorts=(skip_so
             sorting_time = timeit(
                 stmt="sort_test_with_data(sort={}, data={})".format(sort.__name__, unsorted_dataset_copy),
                 number=1,
-                setup="from __main__ import sort_test; from sorting_algorithms import {}".format(sort.__name__))
+                setup="from __main__ import sort_test_with_data; from sorting_algorithms import {}".format(
+                    sort.__name__))
 
             # time taken to sort data with number of elements N
             sorting_times[i+1] = sorting_time
@@ -304,22 +306,18 @@ between {}{}{} and {}{}{} using {}{}{}: {}{:.3f}{} secs\n".format(
         # Add the data
         data.append(sorting_times)
 
-        # Indicate that the numbers have been used already by putting them into the dict
-        for unsorted in unsorted_dataset:
-            for num in unsorted:
-                if num in numbers_used:
-                    numbers_used[num] += 1
-                else:
-                    numbers_used[num] = 1
+        # Append the flattened numbers into the numbers_used list
+        numbers_used += [number for unordered_list in unsorted_dataset for number in unordered_list]
 
         n += increment if type.lower() == 'linear' else int(increment * (coefficient ** index))
         index += 1
-
+    """
     # Transforms the dictionary we made into a 2-D array where the sub-lists are the number frequency pairs
     # That we kept track of in the numbers_used dict
     numbers_used_array = [[number, frequency] for number, frequency in numbers_used.items()]
+    """
 
-    return np.array(data), np.array(numbers_used_array)
+    return np.array(data), np.array(numbers_used)
 
 
 def elements_vs_time_bases(a=-maxsize-1, b=maxsize, bases=(2, 4, 6, 8, 10, 20), trials=100, start=10,
@@ -614,26 +612,47 @@ def create_elements_vs_time_graph(a=0, b=256, start=10, end=5000, increment=5, c
         "{}/data/TimeOverElements{}-{}_i{}a{}{}.txt".format(os.getcwd(), end, start, increment,
                                                             str(coefficient).replace('.', ''), mode)
 
+    # We want this to be a json serializable object
+    numbers_fpath = fpath + '.json' if fpath.find('.txt') == -1 else \
+                    fpath.replace('.txt', 'numbers.txt')
+
     if os.path.exists(fpath):
         data = np.loadtxt(fpath)
+        numbers_frequency = np.loadtxt(numbers_fpath)
+
+        # try and load the number frequency
 
     else:
-        data = elements_vs_time(a=a, b=b, start=start, stop=end, increment=increment, trials=trials, sorts=sorts,
-                                type=mode, coefficient=coefficient)
+        data, numbers_frequency = elements_vs_time(
+            a=a, b=b, start=start, stop=end, increment=increment, trials=trials,
+            sorts=sorts, type=mode, coefficient=coefficient)
 
-    # Try to save the data as a text file
-    np.savetxt(fname=fpath, X=data)
+        # Try to save the data as a text file
+        np.savetxt(fname=fpath, X=data)
+        np.savetxt(fname=numbers_fpath, X=numbers_frequency)
 
     time_over_n = pd.DataFrame(data=data[:, 1:], index=data[:, 0], columns=list(map(lambda x: x.__name__, sorts)))
 
-    plot = time_over_n.plot(title="Time Taken to Sort An Array as N Increases from {} to {}\n\
+    time_plot = time_over_n.plot(title="Time Taken to Sort An Array as N Increases from {} to {}\n\
 With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
 
-    plot.set_xlabel("Number of Elements (N)")
-    plot.set_ylabel("Time (secs)")
+    time_plot.set_xlabel("Number of Elements (N)")
+    time_plot.set_ylabel("Time (secs)")
+
+    entry_number = len(os.listdir(os.getcwd() + '/plots'))
 
     # Save the figure as to avoid overwriting other plots
-    plt.savefig("{}/plots/plot{}.png".format(os.getcwd(), len(os.listdir(os.getcwd() + "/plots"))))
+    plt.savefig("{}/plots/plot{}.png".format(os.getcwd(), entry_number))
+
+    plt.show()
+
+    numbers_hist = pd.Series(data=numbers_frequency)
+
+    hist_plot = numbers_hist.plot(title="Frequency of Numbers Generated Between {} and {}".format(a, b))
+    hist_plot.set_xlabel("Generated Numbers")
+    hist_plot.set_ylabel("Frequency")
+
+    plt.savefig("{}/plots/plot{}hist.png".format(os.getcwd(), entry_number))
 
     plt.show()
 
@@ -670,10 +689,9 @@ With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
 
 
 if __name__ == '__main__':
-    data = [randint(0, 10) for i in range(100)]
-    print(data)
-    skip_sort(data)
-    print(data)
+
+    create_elements_vs_time_graph(a=0, b=1024, end=10000, start=1000, increment=250, trials=10,
+                                  sorts=(skip_sort, quick_sort, merge_sort, radix_sort, tim_sort))
 
     # create_elements_vs_time_graph(a=0, b=1000000, start=100, end=1000000, bases=(2, 10),
     #                               increment=1, coefficient=10, trials=1, mode='Geometric')
