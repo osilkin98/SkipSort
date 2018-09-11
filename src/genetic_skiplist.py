@@ -18,6 +18,17 @@ def increment_color(color_code: str):
     return colorama.ansi.CSI + str((int(color_code.rstrip('m').lstrip(colorama.ansi.CSI).rstrip('m')) + 1) % 108) + 'm'
 
 
+def sort_test_with_data(sort, data):
+    """ This is a function to test a given sorting algorithm against the dataset provided.
+
+    :param function sort: Sorting function to sort the data with
+    :param list data: List containing prepared unsorted datasets to be sorted. This SHOULD be
+
+    :return: Nothing
+    """
+    for unsorted_list in data:
+        sort(unsorted_list)
+
 # This is for testing any other function since skipsort may have a base specified as well
 def sort_test(sort, N=100, a=0, b=maxsize):
     """
@@ -604,9 +615,10 @@ With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
 
 
 if __name__ == '__main__':
-    create_elements_vs_time_graph(a=0, b=1024, start=100, end=25000,
-                                  sorts=(skip_sort, radix_sort, quick_sort, merge_sort, tim_sort),
-                                  increment=100, trials=50, mode='linear')
+    data = [randint(0, 10) for i in range(100)]
+    print(data)
+    skip_sort(data)
+    print(data)
 
     # create_elements_vs_time_graph(a=0, b=1000000, start=100, end=1000000, bases=(2, 10),
     #                               increment=1, coefficient=10, trials=1, mode='Geometric')
