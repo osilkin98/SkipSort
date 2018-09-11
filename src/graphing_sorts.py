@@ -29,6 +29,26 @@ def sort_test_with_data(sort, data):
     for unsorted_list in data:
         sort(unsorted_list)
 
+
+def create_random_dataset_standard(a=0, b=maxsize, set_length=100, num_sets=10):
+    """
+
+    :param int | float a: Lowest possible value for the Datasets
+    :param int | float b: Highest possible value for the datasets
+    :param set_length: Number of elements within each dataset
+    :param num_sets: Amount of datasets to generate
+    :return: A List of the datasets as tuples , though these should be copied to avoid having already sorted data.
+    :rtype: list
+    """
+    if type(a) is int and type(b) is int:
+        sets = [[randint(a, b) for k in range(set_length)] for i in range(num_sets)]
+
+    else:
+        sets = [tuple([random.random() * (b - a) + a for k in range(set_length)]) for i in range(num_sets)]
+
+    return sets
+
+
 # This is for testing any other function since skipsort may have a base specified as well
 def sort_test(sort, N=100, a=0, b=maxsize):
     """
