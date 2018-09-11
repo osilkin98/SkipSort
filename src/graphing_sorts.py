@@ -266,8 +266,13 @@ def elements_vs_time(a=-maxsize-1, b=maxsize, trials=100, sorts=(skip_sort, quic
     :param list | tuple sorts: List of Sorting function that have the format `sort(data)`
     :param int start: First N to Start with
     :param int stop: Last N to Finish with
+     random data. The parameters if any must be provided. If None is provided,
+     the default python random function will be used.
     :param int increment: Increment to Increase by
     :param str type: Method of incrementing, either linear or geometric, however linear works better.
+    :param bool quiet: Flag to indicate whether or not to suppress output. Off by default.
+    :param function random_func: Random function to use for making datasets, uses the numpy.random.normal by default
+    :param dict random_params: Parameters to pass into the random function when generating datasets.
     :return: 2-D Numpy Array in the form [ [N, time1, time2, ...]_1, ... [N, time1, time2, ...]_n ],
      as well as a 1-D Numpy Array containing all the randomly generated numbers
     :rtype: numpy.ndarray, numpy.ndarray
@@ -301,7 +306,11 @@ def elements_vs_time(a=-maxsize-1, b=maxsize, trials=100, sorts=(skip_sort, quic
 
         # This is sort of the main dataset that will be used for sorting, the values within
         # Should be copied into a new list each time, prior to sorting
-        unsorted_dataset = create_random_dataset_standard(a=a, b=b, set_length=n, num_sets=trials)
+        unsorted_dataset = create_random_dataset(set_length=n, num_sets=trials,
+                                                 random_func=random_func, **random_params)
+
+        # unsorted_dataset = create_random_dataset_standard(a=a, b=b, set_length=n, num_sets=trials)
+
 
         for i, sort in enumerate(sorts):
 
@@ -647,9 +656,10 @@ def create_elements_vs_time_graph(a=0, b=256, start=10, end=5000, increment=5, c
         # try and load the number frequency
 
     else:
-        data, numbers_frequency = elements_vs_time(
-            a=a, b=b, start=start, stop=end, increment=increment, trials=trials,
-            sorts=sorts, type=mode, coefficient=coefficient)
+        data, numbers_frequency = elements_vs_time(a=a, b=b, start=start, stop=end,
+                                                   increment=increment, trials=trials,
+                                                   sorts=sorts, type=mode, coefficient=coefficient,
+                                                   random_func=random_func, **random_params)
 
         # Try to save the data as a text file
         np.savetxt(fname=fpath, X=data)
