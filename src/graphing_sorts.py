@@ -41,7 +41,7 @@ def create_random_dataset_standard(a=0, b=maxsize, set_length=100, num_sets=10):
     :rtype: list
     """
     if type(a) is int and type(b) is int:
-        sets = [[randint(a, b) for k in range(set_length)] for i in range(num_sets)]
+        sets = [tuple([randint(a, b) for k in range(set_length)]) for i in range(num_sets)]
 
     else:
         sets = [tuple([random.random() * (b - a) + a for k in range(set_length)]) for i in range(num_sets)]
