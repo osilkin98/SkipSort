@@ -1,4 +1,5 @@
-from sorting_algorithms import skip_sort, quick_sort_recursive, radix_sort, quick_sort, tim_sort_c, merge_sort
+from sorting_algorithms import skip_sort, quick_sort_recursive, radix_sort, \
+    quick_sort, tim_sort_c, merge_sort, timsort
 from sys import maxsize
 from timeit import timeit
 import random
@@ -687,6 +688,7 @@ With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
 
     hist_plot = numbers_hist.hist(bins=50)
 
+    numbers_hist.set_title('Frequency of Numbers Generated with The {} Function'.format(random_func.__name__))
 
     plt.savefig("{}/plots/plot{}hist.png".format(os.getcwd(), entry_number))
 
