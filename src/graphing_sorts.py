@@ -269,6 +269,7 @@ def elements_vs_time(a=-maxsize-1, b=maxsize, trials=100, sorts=(skip_sort, quic
      random data. The parameters if any must be provided. If None is provided,
      the default python random function will be used.
     :param int increment: Increment to Increase by
+    :param float coefficient: This is the number that will be exponentiated if 'geometric' is selected
     :param str type: Method of incrementing, either linear or geometric, however linear works better.
     :param bool quiet: Flag to indicate whether or not to suppress output. Off by default.
     :param function random_func: Random function to use for making datasets, uses the numpy.random.normal by default
