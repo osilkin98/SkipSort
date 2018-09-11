@@ -321,16 +321,9 @@ def timsort(the_array):
 
 if __name__ == '__main__':
     # slist = Skiplist()
-
-    N, trials = 100, 10
-    a, b = 0, 50
-
-    print("Running {} trials for each sorting algorithm on a dataset of N={}\n\
-with randomized datasets generated between a = {} and b = {}".format(trials, N, a, b))
-
-    import timeit
-
-    skip_time = timeit.timeit("test(skip_sort, N={}, a={}, b={})".format(N, a, b),
-                              number=trials, setup="from __main__ import test, skip_sort")
+    from graphing_sorts import create_random_dataset_standard
+    dataset = create_random_dataset_standard(b=10, set_length=10, num_sets=1)[0]
+    print(dataset)
+    timsort(dataset)
 
     # slist.print()
