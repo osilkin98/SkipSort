@@ -4,7 +4,7 @@ from random import randint
 
 
 # skipsort algorithm implementation in python
-def skip_sort(data: list, probability_base=2):
+def skipsort(data: list, probability_base=2):
     slist = Skiplist(probability_base)
     while len(data) != 0:
         slist.insert(data.pop(0))
@@ -16,7 +16,7 @@ def skip_sort(data: list, probability_base=2):
 
 
 # For testing the algorithm
-def bubble_sort(data):
+def bubblesort(data):
     for passnum in range(len(data) - 1, 0, -1):
         for i in range(passnum):
             if data[i] > data[i + 1]:
@@ -43,7 +43,7 @@ def partition(arr, l, h):
 # arr[] --> Array to be sorted,
 # l  --> Starting index,
 # h  --> Ending index
-def quick_sort(arr, l=0, h=None):
+def quicksort(arr, l=0, h=None):
     # Create an auxiliary stack
     h = len(arr) - 1 if h is None else h
 
@@ -89,7 +89,7 @@ def quick_sort(arr, l=0, h=None):
             stack[top] = h
 
 # Recursive impleentation
-def quick_sort_recursive(x):
+def quicksort_recursive(x):
     if len(x) == 1 or len(x) == 0:
         return x
     else:
@@ -100,8 +100,8 @@ def quick_sort_recursive(x):
                 x[j+1],x[i+1] = x[i+1], x[j+1]
                 i += 1
         x[0],x[i] = x[i],x[0]
-        first_part = quick_sort_recursive(x[:i])
-        second_part = quick_sort_recursive(x[i + 1:])
+        first_part = quicksort_recursive(x[:i])
+        second_part = quicksort_recursive(x[i + 1:])
         first_part.append(x[i])
         return first_part + second_part
 
@@ -140,7 +140,7 @@ def merge(a, left, mid, right):
         ind += 1
 
 # This is an iterative implementation of timsort_merge sort
-def merge_sort(list_, left=0, right=None):
+def mergesort(list_, left=0, right=None):
     """
     Iterative version of the Merge Sort Algorithm
     """
@@ -182,7 +182,7 @@ def merge_sort(list_, left=0, right=None):
             break
 
 
-def radix_sort(alist, base=10):
+def radixsort(alist, base=10):
     if alist == []:
         return
 
@@ -224,7 +224,7 @@ def test(sort, N=100, a=0, b=maxsize):
     data.clear()
 
 
-def tim_sort_c(data: list):
+def timsort_c(data: list):
     data.sort()
 
 
