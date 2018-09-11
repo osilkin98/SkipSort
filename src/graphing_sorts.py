@@ -254,8 +254,9 @@ def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None, 
     return np.array(data)
 
 
-def elements_vs_time(a=-maxsize-1, b=maxsize, base=2, trials=100, sorts=(skip_sort, quick_sort_recursive, tim_sort),
-                     start=10, stop=1000, increment=10, coefficient=5.0, type='linear', quiet=False):
+def elements_vs_time(a=-maxsize-1, b=maxsize, trials=100, sorts=(skip_sort, quick_sort_recursive, tim_sort_c),
+                     start=10, stop=1000, increment=10, coefficient=5.0, type='linear',
+                     quiet=False, random_func=np.random.normal, **random_params):
     """ Measures the time it takes for the given sorting algorithms to sort data as N increases.
     Returns a 2-D numpy array in the form: [[N, time1, ... ]_1, [N, time1, ... ]_2, ..., [N, time1, ...]_n]
 
