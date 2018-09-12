@@ -3,7 +3,7 @@ from sorting_algorithms import skipsort, quicksort_recursive, radixsort, \
 from sortingalgos.radixsort import radixsort as radixsort_other
 from sortingalgos.bitonicsort import bitonicsort  # This can only be used if the length is a power of 2
 from sortingalgos.heapsort import heapsort
-from sortingalgos.insertionsort import insertionsort
+from sortingalgos.smoothsort import smoothsort
 from sortingalgos.combsort import combsort
 from sys import maxsize
 from timeit import timeit
@@ -688,7 +688,11 @@ def create_elements_vs_time_graph(a=0, b=256, start=10, end=5000, increment=5, c
 
     hist_plot = numbers_hist.hist(bins=50)
 
-    plt.title('Frequency of Numbers Generated with The {} Function'.format(random_func.__name__))
+    plt.title('Numbers Generated with The {} Function'.format(random_func.__name__))
+
+    plt.xlabel("Values Generated")
+
+    plt.ylabel("Frequency")
 
     plt.savefig("{}/plots/plot{}hist.png".format(os.getcwd(), entry_number))
 
