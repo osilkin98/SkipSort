@@ -1,20 +1,20 @@
 # SkipSort
 
-### What is this?
+## What is this?
 
 This is an implementation of an `O(n)` non-comparison based sorting algorithm for large-ish datasets that
 I came up with. 
 
-### How Does it Work?
+## How Does it Work?
 
-#### Linear-Time Sorting
+### Linear-Time Sorting
 The basic idea is that in order to sort the dataset `X`, you just go through it once and hash the number
 by its value into its correct spot using some kind of hash function which only requires `O(1)` time. 
 
 Since all you'd need for such an algorithm is to traverse the set of data just once, you'd be able to
 obtain a sorted set in just `O(n)` steps. 
 
-#### Sorting by Hashing
+### Sorting by Hashing
 A Hash-based sorting function would look something like this:
 ```cpp
 list<int> sort(list<int> unsortedData, int hashFunction*(int)) {
@@ -42,7 +42,7 @@ Even if we *were* somehow able to store that much memory, even in disk memory, t
 take to traverse a sparse hash table like that would be directly proportional to the amount of space
 we consume. 
 
-#### A More Feasible Approach
+### A More Feasible Approach
 Methods to bypass this limitation would include using a hash-table which would only instantiate 'bucket'
 values (an entry in the hash table representing the specific value and number of times it has appeared) 
 only when it needs them, and then creating a link between the new bucket and the already existing
@@ -55,7 +55,7 @@ the average difference between numbers in the set, and make something like `2^(4
 the data instead of `1`. This helps but not by quite the amount that we'd need. 
 
 
-#### A Quick Way to Access Data With Step Reductions?
+### A Quick Way to Access Data With Step Reductions?
 What we need in this case, is a data-structure which would allow us to have a very quick access and
 insertion time, but at the same time maintain order. 
 
@@ -74,9 +74,9 @@ to just `256`. On average, we would need `log(256) = 8` steps in order to access
 and so if `n > 256`, then the amount of steps needed to access all of these in one pass would be 
 `Ө(n*log(256))`, or `Ө(n*8) ~= Ө(n)`. 
 
-## The Algorithm 
+# The Naive Algorithm 
 
-#### Psuedo-Code
+## Psuedo-Code
 
 The psuedo-code to this algorithm is actually not far off from what I wrote in the first example
 of a hash-based approach to sorting. It goes like this:
@@ -116,19 +116,19 @@ list<int> SkipSort(list<int> unsorted) {
     
 }
 ```
-#### Algorithm Complexity
+## Algorithm Complexity
 
-##### Time Complexity
+### Time Complexity
 
 | Best | Average | Worst |
 |:----:|:-------:|:-----:|
 |`O(n)`|`O(n)`| `O(n log n)`|
 
-##### Space Complexity
+### Space Complexity
 
 `O(n log n)`
 
-#### O(n) Runtime? What's the catch?
+### O(n) Runtime? What's the catch?
 This answer is actually very interesting. Because at the surface level, it seems like the *only* way 
 for this algorithm to utilize its efficiency is to be using a large amount of data, but that's not
 exactly true. In order to need `log(n)` to exceed the number of `bits` the datatype uses, you need to 
@@ -148,7 +148,6 @@ steps for `n = 2^32 + 1`, in the average case. Or in the worst case it would req
 
 ## Performance
 
-### Naive Implementation
 
 The most suitable way to understand just how an algorithm performs, especially if it's hard to grasp 
 the intuition for it, is to just *graph* it, which is exactly what I did.
@@ -157,7 +156,7 @@ In this section, we explore various forms of analysis I performed by using the `
 `timeit` built-in module to perform the averaged timings. In order to create the graphs, I used `numpy` to 
 neatly aggregate the data, as well as `pandas` and `matplotlib.pyplot` to display it. 
 
-#### Comparison Against Other Popular Algorithms Using Random Data
+### Comparison Against Other Popular Algorithms Using Random Data
 
 The most obvious way to first start benchmarking an algorithm is to have it sort variable lengths of data,
 and timing each one and compounding them on average. In order to have a good sense as to how well it actually 
@@ -180,7 +179,7 @@ The Skipsort algorithm doesn't perform well when tested against evenly-distribut
 so to 'shortcut' this limitation, I simply limited the values to a range of `256` possible values, since
 `log_2(256) = 8` implies that It'd have to perform **at most** `8` steps for searching & inserting. 
 
-##### Using Random, Evenly Distributed Data
+### Using Random, Evenly Distributed Data
 
 The First Thing I ran it against was TimSort (Python STL Sort), and the only time SkipSort managed to outperform
 QuickSort was when it'd recurse too far (I was using a basic recursive implementation), and ended up crashing. 
@@ -274,13 +273,15 @@ This solves the problem of congested lookups which we were having previously, re
 the lookup of existing nodes from `O(log(MaxValue)) = O(m)` to `O(1)`, 
 thus for `n > MaxValue`, `O(n*m)` becomes `O(1)`. 
 
-## Revised Algorithm
+# Revised Algorithm
 
 The Algorithm has to fundamentally alter how the Skiplist works. This is 
 something that can be optimized even further, but for the time being,
 the current optimizations will suffice. 
 
-##### Skiplist Search Method
+## The Skiplist Implementation
+
+### Skiplist Search Method
 This is how we would perform searching, clearly a logarithmic operation.
 ```python
 # Old search method, tries to find closest value to key
@@ -312,7 +313,7 @@ def search_psuedocode(skiplist, key):
         return None
 
 ```
-##### SkipList Insertion Method
+### SkipList Insertion Method
 Now we can optimize the insertion method like so:
 ```python
 # increment the value if found, insert if not
@@ -337,7 +338,7 @@ steps for insertion when necessary, where `VR = ValueRange`. Since we anticipate
 when `n > VR`, the amount of insertion steps is only `O(VR log(VR)) = O(k)`, 
 since `k` is a constant, this is technically `O(1)`.
 
-## Skipsort's Improved Performance
+## Skipsort's Improved Performance Benchmarking
 
 ### Using Random, Evenly Distributed Data
 
@@ -364,8 +365,115 @@ the data is spread out in a non-even manner, unlike the first benchmarks shown.
 
 #### Normal Gaussian Distribution
 
-This is probably the best distribution to start with. Picking `μ = `
+This is probably the best distribution to start with, and the one we'll spend 
+the most time showcasing.
 
+
+##### μ = 150; σ = 10
+
+The algorithm performs optimally here, better
+than all the rest, with the exception of Timsort.
+
+![alt text](src/plots/plot64.png)
+
+##### 100 <= N <= 15000 
+
+![alt text](src/plots/plot64hist.png "μ = 150; σ = 10")
+
+
+
+
+Zooming in on a smaller interval reveals that
+the algorithm outperforms all the others
+almost immediately, passing CombSort 
+at just `N ~= 75`
+
+##### μ = 150; σ = 10
+
+![alt text](src/plots/plot78.png)
+
+##### 100 <= N <= 1000
+
+![alt text](src/plots/plot78hist.png)
+
+
+Now when we increase the standard deviation from
+`10` to `2000`, we see the performance begin
+to average out and become about as good
+as radix sort, so we'd obviously need to increase
+the size before we see a dramatic increase in 
+performance
+
+##### μ = 150; σ = 2000
+
+![alt text](src/plots/plot82.png)
+
+##### 100 <= N <= 5000
+
+![alt text](src/plots/plot82hist.png)
+
+
+#### Binomial Distributions
+
+This one should come as no surprise, but skipsort easily
+takes the lead, which isn't hard to believe considering the 
+value range here is hardly 7.
+
+##### n = 130, p = 0.985
+
+![alt text](src/plots/plot105.png)
+
+##### 10 <= N <= 1000
+
+![alt text](src/plots/plot105hist.png)
+
+This is basically the same thing
+
+##### n = 30, p = 0.23
+
+![alt text](src/plots/plot113.png)
+
+##### 50 <= N <= 5000
+
+![alt text](src/plots/plot113hist.png)
+
+Somehow I don't think we're going to see anything 
+we already haven't seen from Binomial Distributions,
+so we'll keep moving.
+
+#### Gamma Distribution
+
+Skipsort beats the others since this was a highly concentrated 
+distribution.
+
+##### Shape: 4, Scale: 4
+
+![alt text](src/plots/plot119.png)
+
+##### 50 <= N <= 5000
+
+![alt text](src/plots/plot119hist.png)
+
+
+This next is probably the most interesting one of all
+
+##### Shape: 100, Scale: 2.64
+
+![alt text](src/plots/plot133.png)
+
+##### N: {1000, 1001, 1006, 1034, 1176, 1888, 5450, 23262, 112324, 557636}
+
+![alt text](src/plots/plot133hist.png)
+
+I'm not exactly sure what happened in that case, however it seemed to 
+go from being a *very* efficient algorithm, to quickly being 
+exponential in time, which is interesting given that, in *theory*, 
+it *should* have been able to perform the sort without taking too much
+time, all it really needed was to quickly locate and increment the values.
+It might be that the lookup time takes far more time than is reasonable.
+
+I will look into this further and determine what causes the slowdown,
+and where the majority of the time is being spent.
 
 ## Where do we go From Here?
 There is still room for further optimization and fine-tuning to this algorithm, namely in the 
