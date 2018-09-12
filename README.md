@@ -165,7 +165,7 @@ works, I had to implement other popular algorithms, known for similar runtimes.
 
 The algorithms used are as follows:
 - Skip Sort
-- TimSort
+- Python STL sort (TimSort*)
 - Radix Sort
 - Quick Sort (iterative)
 - ~~Bubble Sort~~ (Takes ~9 minutes to sort `N=100,000`)

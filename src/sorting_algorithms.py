@@ -224,7 +224,7 @@ def test(sort, N=100, a=0, b=maxsize):
     data.clear()
 
 
-def timsort_c(data: list):
+def python_stl_sort(data: list):
     data.sort()
 
 

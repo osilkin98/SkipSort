@@ -1,5 +1,5 @@
 from sorting_algorithms import skipsort, quicksort_recursive, radixsort, \
-    quicksort, timsort_c, mergesort, timsort
+    quicksort, python_stl_sort, mergesort, timsort
 from sortingalgos.mergesort import mergesort as mergesort_other
 from sortingalgos.quicksort import quicksort as quicksort_other
 from sortingalgos.radixsort import radixsort as radixsort_other
@@ -259,7 +259,7 @@ def sort_with_ranged_bases_multithreaded(a=-maxsize-1, b=maxsize, lengths=None, 
     return np.array(data)
 
 
-def elements_vs_time(a=-maxsize-1, b=maxsize, trials=100, sorts=(skipsort, quicksort_recursive, timsort_c),
+def elements_vs_time(a=-maxsize-1, b=maxsize, trials=100, sorts=(skipsort, quicksort_recursive, python_stl_sort),
                      start=10, stop=1000, increment=10, coefficient=5.0, type='linear',
                      quiet=False, random_func=np.random.normal, **random_params):
     """ Measures the time it takes for the given sorting algorithms to sort data as N increases.
@@ -621,7 +621,7 @@ def create_sorting_data_graph(a=0, b=maxsize, n: list=None, trials=100, start=1.
 
 
 def create_sparsity_vs_time_graph(minimum=0, start=500, end=1000, increment=5, num_elements=500,
-                                  trials=100, base=2, sorts=(skipsort, quicksort_recursive, timsort_c)):
+                                  trials=100, base=2, sorts=(skipsort, quicksort_recursive, python_stl_sort)):
 
     # Returns a dataset of [[sparsity, time1, ... ]_1, [sparsity, time1, ... ]_2, ..., [sparsity, time1, ... ]_N]
     data = sparsity_vs_time(min_value=minimum, start_value=start, stop_value=end, sorts=sorts,
@@ -644,7 +644,7 @@ As The Value Range Increases From {} to {}".format(num_elements, trials, (start-
 
 
 def create_elements_vs_time_graph(a=0, b=256, start=10, end=5000, increment=5, coefficient=5.0, trials=10,
-                                  sorts=(skipsort, quicksort, timsort_c), fpath=None, mode='linear',
+                                  sorts=(skipsort, quicksort, python_stl_sort), fpath=None, mode='linear',
                                   random_func=np.random.normal, overwrite=True, **random_params):
 
     fpath = fpath if fpath is not None else\
@@ -711,7 +711,7 @@ def create_elements_and_bases_vs_time_graph(a=0, b=256, start=10, end=5000, incr
 
     else:
         data = elements_vs_time_bases(a=a, b=b, start=start, stop=end, increment=increment,
-                                      trials=trials, bases=bases, type=mode, coefficient=coefficient)
+                                      trials=trials, bases=bases)
 
     # Try to save the data as a text file
     np.savetxt(fname=fpath, X=data)
@@ -731,9 +731,9 @@ With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
 
 
 if __name__ == '__main__':
-    random_parameters = {'loc': 50, 'scale': 30}
+    random_parameters = {'loc': 150, 'scale': 10}
     create_elements_vs_time_graph(end=30000, start=100, increment=100, trials=10,
-                                  sorts=(skipsort, quicksort, mergesort, radixsort_other, timsort_c),
+                                  sorts=(skipsort, quicksort, mergesort, radixsort_other, python_stl_sort),
                                   random_func=np.random.normal, **random_parameters)
 
     # create_elements_vs_time_graph(a=0, b=1000000, start=100, end=1000000, bases=(2, 10),
