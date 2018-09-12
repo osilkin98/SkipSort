@@ -369,14 +369,11 @@ This is probably the best distribution to start with, and the one we'll spend
 the most time showcasing.
 
 
-##### μ = 150; σ = 10
-
 The algorithm performs optimally here, better
 than all the rest, with the exception of Timsort.
 
 ![alt text](src/plots/plot64.png)
 
-##### 100 <= N <= 15000 
 
 ![alt text](src/plots/plot64hist.png "μ = 150; σ = 10")
 
@@ -388,11 +385,8 @@ the algorithm outperforms all the others
 almost immediately, passing CombSort 
 at just `N ~= 75`
 
-##### μ = 150; σ = 10
 
 ![alt text](src/plots/plot78.png)
-
-##### 100 <= N <= 1000
 
 ![alt text](src/plots/plot78hist.png)
 
@@ -404,11 +398,8 @@ as radix sort, so we'd obviously need to increase
 the size before we see a dramatic increase in 
 performance
 
-##### μ = 150; σ = 2000
 
 ![alt text](src/plots/plot82.png)
-
-##### 100 <= N <= 5000
 
 ![alt text](src/plots/plot82hist.png)
 
@@ -419,21 +410,16 @@ This one should come as no surprise, but skipsort easily
 takes the lead, which isn't hard to believe considering the 
 value range here is hardly 7.
 
-##### n = 130, p = 0.985
 
 ![alt text](src/plots/plot105.png)
 
-##### 10 <= N <= 1000
 
 ![alt text](src/plots/plot105hist.png)
 
 This is basically the same thing
 
-##### n = 30, p = 0.23
 
 ![alt text](src/plots/plot113.png)
-
-##### 50 <= N <= 5000
 
 ![alt text](src/plots/plot113hist.png)
 
@@ -446,18 +432,15 @@ so we'll keep moving.
 Skipsort beats the others since this was a highly concentrated 
 distribution.
 
-##### Shape: 4, Scale: 4
 
 ![alt text](src/plots/plot119.png)
 
-##### 50 <= N <= 5000
 
 ![alt text](src/plots/plot119hist.png)
 
 
 This next is probably the most interesting one of all
 
-##### Shape: 100, Scale: 2.64
 
 ![alt text](src/plots/plot133.png)
 
