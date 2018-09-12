@@ -19,8 +19,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-
-
 def cocktailsort(lst):
     begin, end = 0, len(lst) - 1
     finished = False
@@ -29,16 +27,14 @@ def cocktailsort(lst):
         for i in range(begin, end):
             if lst[i] > lst[i + 1]:
                 lst[i], lst[i + 1] = lst[i + 1], lst[i]
-                lst.log()
                 finished = False
         if finished:
             break
         finished = True
         end -= 1
-        for i in reversed(range(begin, end)):
+        for i in reversed(list(range(begin, end))):
             if lst[i] > lst[i + 1]:
                 lst[i], lst[i + 1] = lst[i + 1], lst[i]
-                lst.log()
                 finished = False
         begin += 1
 

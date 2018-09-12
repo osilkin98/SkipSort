@@ -25,19 +25,19 @@ def sift(lst, start, count):
             child += 1
         if lst[root] < lst[child]:
             lst[root], lst[child] = lst[child], lst[root]
-            lst.log()
+            # lst.log()
             root = child
         else:
             return
 
 def heapsort(lst):
-    start = (len(lst)/2)-1
+    start = int(len(lst)/2)-1
     end = len(lst)-1
     while start >= 0:
         sift(lst, start, len(lst))
         start -= 1
     while end > 0:
         lst[end], lst[0] = lst[0], lst[end]
-        lst.log()
+        # lst.log()
         sift(lst, 0, end)
         end -= 1

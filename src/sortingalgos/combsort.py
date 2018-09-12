@@ -28,7 +28,6 @@ def combsort(lst):
         for i in range(len(lst) - gap):
             if lst[i] > lst[i + gap]:
                 lst[i], lst[i + gap] = lst[i + gap], lst[i]
-                lst.log()
                 swaps = True
         if not swaps and gap <= 1:
             break
