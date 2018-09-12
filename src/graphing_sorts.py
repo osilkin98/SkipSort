@@ -1,7 +1,9 @@
 from sorting_algorithms import skipsort, quicksort_recursive, radixsort, \
     quicksort, timsort_c, mergesort, timsort
-from sortingalgos import quicksort as other_quicksort, radixsort as other_radixsort,\
-    mergesort as other_mergesort
+from sortingalgos.mergesort import mergesort as mergesort_other
+from sortingalgos.quicksort import quicksort as quicksort_other
+from sortingalgos.radixsort import radixsort as radixsort_other
+from sortingalgos.timsort import timsort as timsort_other
 from sys import maxsize
 from timeit import timeit
 import random
@@ -690,7 +692,7 @@ With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
 
     hist_plot = numbers_hist.hist(bins=50)
 
-    numbers_hist.set_title('Frequency of Numbers Generated with The {} Function'.format(random_func.__name__))
+    plt.title('Frequency of Numbers Generated with The {} Function'.format(random_func.__name__))
 
     plt.savefig("{}/plots/plot{}hist.png".format(os.getcwd(), entry_number))
 
@@ -730,8 +732,8 @@ With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
 
 if __name__ == '__main__':
     random_parameters = {'loc': 50, 'scale': 30}
-    create_elements_vs_time_graph(end=2500, start=500, increment=100, trials=10,
-                                  sorts=(quicksort, mergesort, timsort_c, radixsort, timsort),
+    create_elements_vs_time_graph(end=30000, start=100, increment=100, trials=10,
+                                  sorts=(skipsort, quicksort, mergesort, radixsort_other, timsort_c),
                                   random_func=np.random.normal, **random_parameters)
 
     # create_elements_vs_time_graph(a=0, b=1000000, start=100, end=1000000, bases=(2, 10),
