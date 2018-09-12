@@ -24,4 +24,5 @@ def insertionsort(lst):
             if lst[i] < lst[j]:
                 x = lst.pop(i)
                 lst.insert(j, x)
-                lst.log()
+                # lst.log()
+
