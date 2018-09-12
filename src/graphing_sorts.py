@@ -17,7 +17,7 @@ import os
 import threading
 import colorama.ansi
 from colorama import Fore
-
+from matplotlib import rc
 
 # This increments the value of the color given as a code
 def increment_color(color_code: str):
@@ -297,12 +297,15 @@ def elements_vs_time(a=-maxsize-1, b=maxsize, trials=100, sorts=(skipsort, quick
     # While n is less than or equal to the maximum number of elements we want to stop at
     while n <= stop:
 
+        index_string = "{}[index = {}]:{} ".format(Fore.RED, index, Fore.RESET)
+
         if not quiet:
             # This value will only be set if the quiet flag was called
-            index_string = "{}[index = {}]:{} ".format(Fore.RED, index, Fore.RESET)
             print(index_string + "Computing average sorting time for N={}{}{} using {}{}{} samples\n".format(
                 Fore.CYAN, n, Fore.RESET, Fore.BLUE, trials, Fore.RESET))
-
+        elif index % 10 == 0:
+            print(index_string + "[{}{}{}/{}{}{}]".format(Fore.LIGHTGREEN_EX, n, Fore.RESET,
+                                                          Fore.CYAN, stop, Fore.RESET))
         # Create an empty list with the first element being the number of elements that get sorted
         # And each index corresponds to the given functions sorting time
         sorting_times = [n] + [0] * num_sorts
@@ -660,17 +663,22 @@ def create_elements_vs_time_graph(a=0, b=256, start=10, end=5000, increment=5, c
     else:
         data, numbers_frequency = elements_vs_time(a=a, b=b, start=start, stop=end,
                                                    increment=increment, trials=trials,
-                                                   sorts=sorts, type=mode, coefficient=coefficient,
+                                                   sorts=sorts, type=mode, quiet=False, coefficient=coefficient,
                                                    random_func=random_func, **random_params)
 
         # Try to save the data as a text file
         np.savetxt(fname=fpath, X=data)
         np.savetxt(fname=numbers_fpath, X=numbers_frequency)
 
-    time_over_n = pd.DataFrame(data=data[:, 1:], index=data[:, 0], columns=list(map(lambda x: x.__name__, sorts)))
+    rc('font', **{'family': 'serif', 'serif': ['Times']})
 
-    time_plot = time_over_n.plot(title="Time Taken to Sort An Array as N Increases from {} to {}\n\
-    Using ({} incrementation)".format(start, end, b-a, mode))
+    time_over_n = pd.DataFrame(data=data[:, 1:], index=data[:, 0], columns=list(map(
+        lambda x: x.__name__.replace('_', '\_'), sorts)))
+
+    rc('text', usetex=True)
+
+    time_plot = time_over_n.plot(title="Time Taken by Algorithms to Sort Arrays of Varying Length\n\
+    Using ({} incrementation)".format(start, mode))
 
     time_plot.set_xlabel("Number of Elements (N)")
     time_plot.set_ylabel("Time (secs)")
@@ -686,9 +694,11 @@ def create_elements_vs_time_graph(a=0, b=256, start=10, end=5000, increment=5, c
 
     plt.figure()
 
-    hist_plot = numbers_hist.hist(bins=50)
+    numbers_hist.hist(bins=100)
+    # plt.rc('text', usetex=True)
 
-    plt.title('Numbers Generated with The {} Function'.format(random_func.__name__))
+    plt.title(r'Numbers Generated with The {} Function: $\alpha={}$, $\theta={}$'.format(
+        random_func.__name__, random_params['shape'], random_params['scale']))
 
     plt.xlabel("Values Generated")
 
@@ -731,12 +741,12 @@ With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
 
 
 if __name__ == '__main__':
-    random_parameters = {'loc': 150, 'scale': 10}
+    random_parameters = {'scale': 2.64, 'shape': 100}
 
-    create_elements_vs_time_graph(end=15000, start=100, increment=500, trials=10,
+    create_elements_vs_time_graph(end=1000000, start=1000, increment=1.14, trials=10, mode='Geometric', overwrite=True,
                                   sorts=(skipsort, mergesort, combsort,
-                                         radixsort, python_stl_sort, heapsort),
-                                  random_func=np.random.normal, **random_parameters)
+                                         radixsort, python_stl_sort, heapsort, smoothsort),
+                                  random_func=np.random.gamma, **random_parameters)
 
     # create_elements_vs_time_graph(a=0, b=1000000, start=100, end=1000000, bases=(2, 10),
     #                               increment=1, coefficient=10, trials=1, mode='Geometric')
