@@ -169,9 +169,12 @@ The algorithms used are as follows:
 - Radix Sort
 - Quick Sort (iterative)
 - ~~Bubble Sort~~ (Takes ~9 minutes to sort `N=100,000`)
-- Merge Sort*
+- Merge Sort
 
-*Note that I did not include Merge Sort until a lot later into the code, for no particular reason either.
+*Note that I couldn't find a working implementation of Timsort in Python, and the 
+native Timsort that Python uses is implemented in C and therefore is an unfair
+comparison as it will undoubtedly perform far faster than the other algorithms
+which are all implemented in Python.
 
 The Skipsort algorithm doesn't perform well when tested against evenly-distributed randomized data, 
 so to 'shortcut' this limitation, I simply limited the values to a range of `256` possible values, since
@@ -271,7 +274,7 @@ This solves the problem of congested lookups which we were having previously, re
 the lookup of existing nodes from `O(log(MaxValue)) = O(m)` to `O(1)`, 
 thus for `n > MaxValue`, `O(n*m)` becomes `O(1)`. 
 
-#### Revised Algorithm
+## Revised Algorithm
 
 The Algorithm has to fundamentally alter how the Skiplist works. This is 
 something that can be optimized even further, but for the time being,
@@ -334,15 +337,35 @@ steps for insertion when necessary, where `VR = ValueRange`. Since we anticipate
 when `n > VR`, the amount of insertion steps is only `O(VR log(VR)) = O(k)`, 
 since `k` is a constant, this is technically `O(1)`.
 
-#### Comparing Skipsort's Runtime to Other Well-Known Algorithms
+## Skipsort's Improved Performance
 
+### Using Random, Evenly Distributed Data
 
+Using randomly generated values between `0` and `1024`, this is the 
+performance I was able to measure.
 
 ![alt text](src/plots/plot26.png "TAKE THAT QUICKSORT")
 
-The algorithm manages to outperform Quicksort, Radix Sort, and Merge Sort.
-Timsort remains undefeated, however the fact that I finally beat QuickSort 
-is enough to let me get enough sleep at night.
+The algorithm manages to outperform Radix Sort immediately, Merge Sort when `n >= 1200`,
+and Quicksort when `n >= 5000`.
+Timsort is another story since it was implemented in C, and is therefore an invalid 
+comparison to draw against the other algorithms. I will still include it however,
+as my algorithm gets closer and closer to catching up with it from here. 
+
+Here's a histogram of the data generated for the plot above, for any
+non-believers.
+
+![alt text](src/plots/plot26hist.png "Not Very Exciting")
+
+### Using Random Non-Evenly Distributed Data
+
+In Theory this algorithm performs better when the data is created using distributions where
+the data is spread out in a non-even manner, unlike the first benchmarks shown. 
+
+#### Normal Gaussian Distribution
+
+This is probably the best distribution to start with. Picking `μ = `
+
 
 ## Where do we go From Here?
 There is still room for further optimization and fine-tuning to this algorithm, namely in the 

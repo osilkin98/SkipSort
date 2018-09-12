@@ -1,9 +1,10 @@
 from sorting_algorithms import skipsort, quicksort_recursive, radixsort, \
     quicksort, python_stl_sort, mergesort, timsort
-from sortingalgos.mergesort import mergesort as mergesort_other
-from sortingalgos.quicksort import quicksort as quicksort_other
 from sortingalgos.radixsort import radixsort as radixsort_other
-from sortingalgos.timsort import timsort as timsort_other
+from sortingalgos.bitonicsort import bitonicsort  # This can only be used if the length is a power of 2
+from sortingalgos.heapsort import heapsort
+from sortingalgos.insertionsort import insertionsort
+from sortingalgos.combsort import combsort
 from sys import maxsize
 from timeit import timeit
 import random
@@ -48,10 +49,6 @@ def create_random_dataset(set_length=100, num_sets=10, random_func=np.random.nor
     :return: A List of the datasets as tuples , though these should be copied to avoid having already sorted data.
     :rtype: list
     """
-    print("Set length: {}\nN: {}\nFunction: {}\n".format(set_length, num_sets, random_func.__name__))
-    for key, value in kwargs.items():
-        print("{}: {}".format(key, value))
-
     if force_int:
         return [tuple([int(random_func(**kwargs)) for num in range(set_length)]) for dataset in range(num_sets)]
     else:
@@ -317,7 +314,6 @@ def elements_vs_time(a=-maxsize-1, b=maxsize, trials=100, sorts=(skipsort, quick
 
         # unsorted_dataset = create_random_dataset_standard(a=a, b=b, set_length=n, num_sets=trials)
 
-
         for i, sort in enumerate(sorts):
 
             # Creates a copy of the unsorted data, each time the loop runs, this is reset
@@ -327,8 +323,8 @@ def elements_vs_time(a=-maxsize-1, b=maxsize, trials=100, sorts=(skipsort, quick
             sorting_time = timeit(
                 stmt="sort_test_with_data(sort={}, data={})".format(sort.__name__, unsorted_dataset_copy),
                 number=1,
-                setup="from __main__ import sort_test_with_data; from sorting_algorithms import {}".format(
-                    sort.__name__))
+                setup="from __main__ import sort_test_with_data; from {} import {}".format(
+                    sort.__module__, sort.__name__))
 
             # time taken to sort data with number of elements N
             sorting_times[i+1] = sorting_time
@@ -674,7 +670,7 @@ def create_elements_vs_time_graph(a=0, b=256, start=10, end=5000, increment=5, c
     time_over_n = pd.DataFrame(data=data[:, 1:], index=data[:, 0], columns=list(map(lambda x: x.__name__, sorts)))
 
     time_plot = time_over_n.plot(title="Time Taken to Sort An Array as N Increases from {} to {}\n\
-With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
+    Using ({} incrementation)".format(start, end, b-a, mode))
 
     time_plot.set_xlabel("Number of Elements (N)")
     time_plot.set_ylabel("Time (secs)")
@@ -732,8 +728,10 @@ With a Value Range of {} ({} incrementation)".format(start, end, b-a, mode))
 
 if __name__ == '__main__':
     random_parameters = {'loc': 150, 'scale': 10}
-    create_elements_vs_time_graph(end=30000, start=100, increment=100, trials=10,
-                                  sorts=(skipsort, quicksort, mergesort, radixsort_other, python_stl_sort),
+
+    create_elements_vs_time_graph(end=15000, start=100, increment=500, trials=10,
+                                  sorts=(skipsort, mergesort, combsort,
+                                         radixsort, python_stl_sort, heapsort),
                                   random_func=np.random.normal, **random_parameters)
 
     # create_elements_vs_time_graph(a=0, b=1000000, start=100, end=1000000, bases=(2, 10),

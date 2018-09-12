@@ -1,5 +1,5 @@
 from sys import maxsize
-from skiplist import Skiplist
+from src.skiplist import Skiplist
 from random import randint
 
 
